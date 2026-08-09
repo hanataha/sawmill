@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sawmill Machinery Tutorial Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- LEFT NAVIGATION PANE -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <i class="fa-solid fa-industry"></i>
+      <h2>Sawmill</h2>
+    </div>
+
+    <div class="nav-search">
+      <input type="text" class="search-box" id="search-input" placeholder="Cari mesin atau topik...">
+    </div>
+
+    <nav class="nav-menu">
+      <!-- 4面プレ－ナ－ (Four-Side Planer) -->
+      <div class="machine-group open">
+        <button class="machine-btn" onclick="toggleMachine(this)">
+          <span><i class="fa-solid fa-cubes-stacked" style="margin-right: 8px; color: var(--accent-amber);"></i> 4面プレ－ナ－</span>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </button>
+
+        <div class="sub-menu">
+          <a href="#" class="sub-item active" data-section="desc" onclick="showSection('desc', event)">
+            <i class="fa-solid fa-circle-info"></i> <span class="lang-text" data-id="nav-desc">Deskripsi</span>
+          </a>
+          <a href="#" class="sub-item" data-section="start" onclick="showSection('start', event)">
+            <i class="fa-solid fa-power-off"></i> <span class="lang-text" data-id="nav-start">Cara Menyalakan</span>
+          </a>
+          <a href="#" class="sub-item" data-section="settings" onclick="showSection('settings', event)">
+            <i class="fa-solid fa-sliders"></i> <span class="lang-text" data-id="nav-settings">Pengaturan Angka</span>
+          </a>
+          <a href="#" class="sub-item" data-section="operation" onclick="showSection('operation', event)">
+            <i class="fa-solid fa-gears"></i> <span class="lang-text" data-id="nav-operation">Cara Menggunakan</span>
+          </a>
+          <a href="#" class="sub-item danger-item" data-section="dangers" onclick="showSection('dangers', event)">
+            <i class="fa-solid fa-triangle-exclamation"></i> <span class="lang-text" data-id="nav-dangers">Peringatan & Bahaya</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Additional Machines Placeholder -->
+      <div class="machine-group">
+        <button class="machine-btn" onclick="toggleMachine(this)">
+          <span><i class="fa-solid fa-saw-blade" style="margin-right: 8px; color: var(--text-muted);"></i> 帯鋸盤 (Band Saw)</span>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </button>
+        <div class="sub-menu">
+          <a href="#" class="sub-item"><i class="fa-solid fa-lock"></i> <span class="lang-text" data-id="nav-maint">Dalam Pemeliharaan</span></a>
+        </div>
+      </div>
+
+      <div class="machine-group">
+        <button class="machine-btn" onclick="toggleMachine(this)">
+          <span><i class="fa-solid fa-layer-group" style="margin-right: 8px; color: var(--text-muted);"></i> Gang Ripper</span>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </button>
+        <div class="sub-menu">
+          <a href="#" class="sub-item"><i class="fa-solid fa-lock"></i> <span class="lang-text" data-id="nav-maint">Dalam Pemeliharaan</span></a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <div class="main-wrapper">
+    <header class="top-bar">
+      <div class="top-left-controls">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- TOP LEFT LANGUAGE SWITCHER -->
+        <button class="lang-btn" onclick="toggleLanguage()">
+          <i class="fa-solid fa-globe"></i>
+          <span id="lang-btn-label">🇮🇩 ID / 日本語</span>
+        </button>
+      </div>
+
+      <div class="breadcrumb">
+        <span class="lang-text" data-id="bc-machine">Mesin</span> / <span>4面プレ－ナ－</span> / <span id="current-breadcrumb" class="lang-text" data-id="nav-desc">Deskripsi</span>
+      </div>
+    </header>
+
+    <main class="content-area">
+
+      <!-- SECTION 1: DESCRIPTION -->
+      <section id="pane-desc" class="section-pane active">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-circle-info" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="desc-title">Gambaran Umum Mesin</span></h1>
+          <p class="lang-text" data-id="desc-sub">Memahami fungsi dan alur kerja mesin 4-Side Planer (4面プレ－ナ－).</p>
+        </div>
+
+        <div class="card">
+          <h3 class="lang-text" data-id="desc-card-title">Apa itu 4面プレ－ナ－?</h3>
+          <p style="margin-top: 10px; line-height: 1.6; color: var(--text-muted);" class="lang-text" data-id="desc-card-body">
+            Mesin <strong>4-Side Planer (4面プレ－ナ－)</strong> adalah mesin pengolah kayu industri berat yang dirancang untuk meratakan, menyiku, dan memotong ukuran kayu mentah pada keempat sisinya secara bersamaan dalam satu kali proses (pass).
+          </p>
+
+          <div class="visual-grid">
+            <!-- Image Card 1 -->
+            <div class="img-card">
+              <div class="img-container">
+                <!-- Replace src with your local image file path e.g., src="images/step1.jpg" -->
+                <img src="visual.jpg" alt="visual 4面プレ－ナ－.jpg">
+                <span class="badge lang-text" data-id="img1-tag">Mesin</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img1-title">4面プレ－ナ－</span></h4>
+                <p><span class="lang-text" data-id="img1-desc">Tampak depan 4面プレ－ナ－</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-setting">
+          <div class="setting-card">
+            <h4><i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="lang-text" data-id="desc-feat1-t">Sistem 4 Pisau (Heads)</span></h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" class="lang-text" data-id="desc-feat1-d">Menggunakan poros pisau Atas, Bawah, Kiri, dan Kanan secara berurutan.</p>
+          </div>
+          <div class="setting-card">
+            <h4><i class="fa-solid fa-gauge-high"></i> <span class="lang-text" data-id="desc-feat2-t">Efisiensi Tinggi</span></h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" class="lang-text" data-id="desc-feat2-d">Mempercepat proses penyerutan kayu dibanding mesin serut tunggal.</p>
+          </div>
+          <div class="setting-card">
+            <h4><i class="fa-solid fa-fan"></i> <span class="lang-text" data-id="desc-feat3-t">Sistem Penyedot Serbuk</span></h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" class="lang-text" data-id="desc-feat3-d">Menghasilkan limbah kayu yang banyak; wajib menyalakan penyedot debu (集塵機).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: HOW TO START -->
+      <section id="pane-start" class="section-pane">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-power-off" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="start-title">Cara Menyalakan Mesin</span></h1>
+          <p class="lang-text" data-id="start-sub">Pemeriksaan awal dan urutan menyalakan mesin.</p>
+        </div>
+
+        <div class="step-list">
+
+          <!-- STEP 1 -->
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4><span class="lang-text" data-id="start-s1-t">Cek Penyedot Debu (集塵機)</span></h4>
+              <p class="step-desc lang-text" data-id="start-s1-d">
+                Pastikan sistem ekstraksi debu sudah HIDUP dan katup penyedot terbuka sebelum menyalakan pisau pemotong.
+              </p>
+
+              <!-- Step 1 Image Card -->
+              <div class="img-card">
+                <div class="img-container">
+                  <img src="shuujinki.jpg" alt="Penyedot Debu">
+                </div>
+                <div class="img-card-body">
+                  <h4><span class="lang-text" data-id="img-s2-title">Panel Kontrol 集塵機</span></h4>
+                  <p><span class="lang-text" data-id="img-s2-desc">Tekan tombol sesuai urutan untuk menyalakan penyedot debu.</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4><span class="lang-text" data-id="start-s2-t">Menyalakan Semua breaker yang diperlukan</span></h4>
+              <p class="step-desc lang-text" data-id="start-s2-d">
+                Menyalakan semua pemutus arus listrik (breaker) yang diperlukan untuk menghidupkan mesin dan sistem pendukung.
+              </p>
+
+              <!-- WRAPPER FOR VERTICAL TIMELINE -->
+              <div class="step-timeline">
+                
+                <!-- Image Card 1 -->
+                <div class="img-card timeline-item">
+                  <div class="img-container">
+                    <img src="breaker1.jpg" alt="breaker1">
+                    <span class="badge lang-text" data-id="img-s2-1-tag">Langkah 1</span>
+                  </div>
+                  <div class="img-card-body">
+                    <h4><span class="lang-text" data-id="img-s2-1-title">Panel Breaker 1</span></h4>
+                    <p><span class="lang-text" data-id="img-s2-1-desc">Pastikan semua breaker yang dibutuhkan dalam posisi [ON].</span></p>
+                  </div>
+                </div>
+
+                <!-- Image Card 2 -->
+                <div class="img-card timeline-item">
+                  <div class="img-container">
+                    <img src="breaker2.jpg" alt="Panel Breaker 2">
+                    <span class="badge lang-text" data-id="img-s2-2-tag">Langkah 2</span>
+                  </div>
+                  <div class="img-card-body">
+                    <h4><span class="lang-text" data-id="img-s2-2-title">Panel Breaker 2</span></h4>
+                    <p><span class="lang-text" data-id="img-s2-2-desc">Pastikan semua breaker yang dibutuhkan dalam posisi [ON].</span></p>
+                  </div>
+                </div>
+
+                <!-- Image Card 3 -->
+                <div class="img-card timeline-item">
+                  <div class="img-container">
+                    <img src="breaker34.jpg" alt="Panel Breaker 3 & 4">
+                    <span class="badge lang-text" data-id="img-s2-3-tag">Langkah 3</span>
+                  </div>
+                  <div class="img-card-body">
+                    <h4><span class="lang-text" data-id="img-s2-3-title">Panel Breaker 3 & 4</span></h4>
+                    <p><span class="lang-text" data-id="img-s2-3-desc">Pastikan semua breaker yang dibutuhkan dalam posisi [ON].</span></p>
+                  </div>
+                </div>
+
+              </div> <!-- /step-timeline -->
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4><span class="lang-text" data-id="start-s3-t">Sakelar Utama & Daya Sistem</span></h4>
+              <p class="step-desc lang-text" data-id="start-s3-d">
+                Nyalakan pemutus arus utama di panel listrik. Switch Power ON pada panel kontrol.
+              </p>
+
+              <!-- Step 3 Image Card -->
+              <div class="img-card">
+                <div class="img-container">
+                  <img src="mainswitch.jpg" alt="main switch">
+                </div>
+                <div class="img-card-body">
+                  <h4><span class="lang-text" data-id="img-s3-title">Monitor Utama Panel Kontrol</span></h4>
+                  <p><span class="lang-text" data-id="img-s3-desc">Posisikan switch ke [入] untuk menyalakan mesin.</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
+
+      <!-- SECTION 3: HOW TO SET NUMBERS (WITH INTEGRATED IMAGES) -->
+      <section id="pane-settings" class="section-pane">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-sliders" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="set-title">Pengaturan Angka & Ukuran</span></h1>
+          <p class="lang-text" data-id="set-sub">Pengaturan layar digital dan skala mekanis untuk presisi ukuran.</p>
+        </div>
+
+        <div class="card">
+          <h3 class="lang-text" data-id="set-card-title">Kontrol Ukuran Utama</h3>
+          <div class="interactive-setting">
+            <div class="setting-card">
+              <h4><span class="lang-text" data-id="set-c1-t">Ketebalan Jadi (厚み)</span></h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);" class="lang-text" data-id="set-c1-d">Tentukan nilai ketebalan jadi yang diinginkan. Pastikan ketebalan kayu mentah minimal 6mm lebih besar dari ketebalan jadi.</p>
+            </div>
+            <div class="setting-card">
+              <h4><span class="lang-text" data-id="set-c2-t">Lebar Jadi (巾)</span></h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);" class="lang-text" data-id="set-c2-d">Tentukan nilai lebar jadi yang diinginkan. Pastikan lebar kayu mentah minimal 6mm lebih besar dari lebar jadi.</p>
+            </div>
+            <div class="setting-card">
+              <h4><span class="lang-text" data-id="set-c3-t">Kecepatan Dorong (送リ速度)</span></h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted);" class="lang-text" data-id="set-c3-d">Sesuaikan kecepatan roda pemutar sesuai dengan kekerasan jenis kayu (misal 15-30 m/menit). Tetapi untuk hasil yang lebih rapih dan halus terutama untuk shiagari biasanya menggunakan 6m/menit agar pisau dapat memotong dengan baik.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VISUAL SETUP GUIDE (IMAGE GALLERY / TIMELINE) -->
+        <div class="card visual-guide-card">
+          <h3 class="lang-text" data-id="gal-title">Urutan Penyetelan dalam Monitor</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;" class="lang-text" data-id="gal-sub">
+            Cara menyetel pengaturan mesin secara bertahap.
+          </p>
+
+          <!-- CONNECTED VERTICAL TIMELINE -->
+          <div class="step-timeline gallery-timeline">
+
+            <!-- Image Card 1 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan1.jpg" alt="langkah 1: tekan tombol 目標値 現在値修正">
+                <span class="badge lang-text" data-id="img1-tag">Langkah 1</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img1-title">Tekan tombol 目標値 現在値修正</span></h4>
+                <p><span class="lang-text" data-id="img1-desc">Untuk masuk ke mode pengaturan ukuran</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 2 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan2.jpg" alt="langkah 2: tekan tombol 目標値 設定">
+                <span class="badge lang-text" data-id="img2-tag">Langkah 2</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img2-title">Tekan tombol 目標値 設定</span></h4>
+                <p><span class="lang-text" data-id="img2-desc">Untuk masuk ke mode untuk mengubah angka</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 3 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan3.jpg" alt="langkah 3: menyetel 高さ atau 厚み, ketebalan">
+                <span class="badge lang-text" data-id="img3-tag">Langkah 3</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img3-title">Menyetel 高さ atau 厚み, Ketebalan</span></h4>
+                <p><span class="lang-text" data-id="img3-desc">Tekan bagian pada nomor 1 kemudian input nilai yang diinginkan pada bagian nomor 2, konfirmasi angka yang diinput dengan menekan nomor 3.</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 4 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan4.jpg" alt="langkah 4: menyetel ハバ atau 幅, lebar">
+                <span class="badge lang-text" data-id="img4-tag">Langkah 4</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img4-title">Menyetel ハバ atau 幅, Lebar</span></h4>
+                <p><span class="lang-text" data-id="img4-desc">Tekan bagian pada nomor 1 kemudian input nilai yang diinginkan pada bagian nomor 2, konfirmasi angka yang diinput dengan menekan nomor 3.</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 5 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan5.jpg" alt="langkah 5: Pemeriksaan Kalibrasi">
+                <span class="badge lang-text" data-id="img5-tag">Langkah 5</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img5-title">Pemeriksaan Kalibrasi</span></h4>
+                <p><span class="lang-text" data-id="img5-desc">Pastikan pengaturan ukuran sudah benar dan konsisten dengan kebutuhan. Kemudian tekan 戻る untuk kembali ke menu sebelumnya.</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 6 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan6.jpg" alt="langkah 6: Tekan tombol 位置決め スタート">
+                <span class="badge lang-text" data-id="img6-tag">Langkah 6</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img6-title">Tekan tombol 位置決め スタート</span></h4>
+                <p><span class="lang-text" data-id="img6-desc">Untuk membuat mesin bergerak menyesuaikan setelan yang telah ditentukan.</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 7 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pengaturan7.jpg" alt="langkah 7: Pemeriksaan Hasil">
+                <span class="badge lang-text" data-id="img7-tag">Langkah 7</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img7-title">Tekan tombol 操作画面 戻る</span></h4>
+                <p><span class="lang-text" data-id="img7-desc">Untuk kembali ke menu sebelumnya</span></p>
+              </div>
+            </div>
+
+          </div> <!-- /step-timeline -->
+        </div>
+
+        <!-- VISUAL SETUP GUIDE (IMAGE GALLERY / TIMELINE) -->
+        <div class="card visual-guide-card">
+          <h3 class="lang-text" data-id="gal-title">Urutan Penyetelan Analog</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;" class="lang-text" data-id="gal-sub">
+            Setelah menyetel angka di monitor, pastikan juga menyetel skala mekanis pada mesin agar sesuai dengan pengaturan digital. Karena Pisau 1 dan Pisau 2 hanya bisa disetel secara manual.
+          </p>
+
+          <!-- CONNECTED VERTICAL TIMELINE -->
+          <div class="step-timeline gallery-timeline">
+
+            <!-- Image Card 8 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pisau1.jpg" alt="langkah 1: Sesuaikan Ukuran untuk Pisau 1">
+                <span class="badge lang-text" data-id="img8-tag">Langkah 1</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img8-title">Sesuaikan Ukuran untuk Pisau 1</span></h4>
+                <p><span class="lang-text" data-id="img8-desc">Untuk menyetel dan menghitung ketebalan kayu yang akan diserut, cari Ukuran Kayu Mentah, apabila ketebalan yang mentah adalah 35 mm dan ketebalan jadi yang diinginkan adalah 25 mm, maka pengaturan harus dilakukan dengan memperhitungkan selisih tersebut 35 - 25 = 10 mm kemudian membaginya menjadi 2, setelah itu menyetel posisi pisau bawah atau pisau 1 dengan angka hasil pembagian tersebut. untuk menyetel, longgarkan kunci pada nomor 1 kemudian putar roda nomor 2 sesuai ukuran yang dibutuhkan sembari melihat nomor 3.</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 2 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pisau2.jpg" alt="langkah 2: Sesuaikan Ukuran untuk Pisau 2">
+                <span class="badge lang-text" data-id="img9-tag">Langkah 2</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img9-title">Sesuaikan Ukuran untuk Pisau 2</span></h4>
+                <p><span class="lang-text" data-id="img9-desc">Untuk menghitung lebar kayu yang akan diserut, cari Ukuran Kayu Mentah, apabila lebar yang mentah adalah 135 mm dan lebar jadi yang diinginkan adalah 125 mm, maka pengaturan harus dilakukan dengan memperhitungkan selisih tersebut 135 - 125 = 10 mm kemudian membaginya menjadi 6 dan 4, setelah itu menyetel posisi pisau kanan atau pisau 2 menjadi 6. untuk menyetel, longgarkan kunci pada nomor 1 kemudian putar lever nomor 2 sesuai ukuran yang dibutuhkan sembari melihat nomor 3.</span></p>
+              </div>
+            </div>
+
+            <!-- Image Card 3 -->
+            <div class="img-card timeline-item">
+              <div class="img-container">
+                <img src="pisau3.jpg" alt="langkah 3: Memastikan Pisau 3 Apakah Sudah Benar">
+                <span class="badge lang-text" data-id="img10-tag">Langkah 3</span>
+              </div>
+              <div class="img-card-body">
+                <h4><span class="lang-text" data-id="img10-title">Memastikan Pisau 3 Apakah Sudah Benar</span></h4>
+                <p><span class="lang-text" data-id="img10-desc">Untuk memastikan pisau 3 sudah benar, periksa posisinya dengan melihat jarak antara 2 garis sesuai yang ada digambar, kemudian ukur menggunakan penggaris, hasil dari pengukuran 2 garis tersebut akan menjadi X, kemudian hitung 200 - X untuk mendapatkan hasil apakah pisau 3 sudah benar.</span></p>
+              </div>
+            </div>
+
+          </div> <!-- /step-timeline -->
+        </div>
+      </section>
+
+      <!-- SECTION 4: HOW TO USE -->
+      <section id="pane-operation" class="section-pane">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-gears" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="op-title">Cara Menggunakan Mesin</span></h1>
+          <p class="lang-text" data-id="op-sub">Prosedur memasukkan kayu dan pengecekan kualitas.</p>
+        </div>
+
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div>
+              <h4><span class="lang-text" data-id="op-s1-t">Pemeriksaan Kayu Mentah</span></h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s1-d">Periksa kayu dari paku, batu, kelengkungan ekstrem, atau kelembaban berlebih sebelum dimasukkan.</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div>
+              <h4><span class="lang-text" data-id="op-s2-t">Memasukkan Kayu (Infeed)</span></h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s2-d">Rapatkan kayu pada pembatas samping (fence) lalu dorong hingga roda penarik menjepit kayu.</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div>
+              <h4><span class="lang-text" data-id="op-s3-t">Cek Sampel Pertama</span></h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s3-d">Ukur hasil kayu pertama menggunakan jangka sorong (caliper) di ujung dan tengah untuk memastikan akurasi.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: HOW TO USE -->
+      <section id="pane-operation" class="section-pane">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-gears" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="op-title">Cara Menggunakan Mesin</span></h1>
+          <p class="lang-text" data-id="op-sub">Prosedur memasukkan kayu dan pengecekan kualitas.</p>
+        </div>
+
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div>
+              <h4><span class="lang-text" data-id="op-s1-t">Pemeriksaan Kayu Mentah</span></h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s1-d">Periksa kayu dari paku, batu, kelengkungan ekstrem, atau kelembaban berlebih sebelum dimasukkan.</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div>
+              <h4><span class="lang-text" data-id="op-s2-t">Memasukkan Kayu (Infeed)</span></h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s2-d">Rapatkan kayu pada pembatas samping (fence) lalu dorong hingga roda penarik menjepit kayu.</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div>
+              <h4><span class="lang-text" data-id="op-s3-t">Cek Sampel Pertama</span></h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s3-d">Ukur hasil kayu pertama menggunakan jangka sorong (caliper) di ujung dan tengah untuk memastikan akurasi.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: WATCH OUT & DANGERS -->
+      <section id="pane-dangers" class="section-pane">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-danger);"></i> <span class="lang-text" data-id="danger-title">Peringatan & Bahaya</span></h1>
+          <p class="lang-text" data-id="danger-sub">Panduan keselamatan kerja dan bahaya utama mesin planer sawmill.</p>
+        </div>
+
+        <div class="danger-box">
+          <h3><i class="fa-solid fa-skull-crossbones"></i> <span class="lang-text" data-id="d1-t">Bahaya Kayu Terpental (Kickback)</span></h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;" class="lang-text" data-id="d1-d">
+            Jangan pernah berdiri sejajar tepat di belakang area masuk kayu. Kayu cacat atau mata kayu bisa terlempar ke belakang dengan tenaga yang sangat kuat.
+          </p>
+        </div>
+
+        <div class="danger-box">
+          <h3><i class="fa-solid fa-hand-slash"></i> <span class="lang-text" data-id="d2-t">Pisau Berputar & Titik Jepit</span></h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;" class="lang-text" data-id="d2-d">
+            Dilarang membuka penutup pelindung atau memasukkan tangan saat pisau masih berputar. Tunggu mesin benar-benar berhenti total sebelum membersihkan kayu yang tersangkut.
+          </p>
+        </div>
+
+        <div class="danger-box">
+          <h3><i class="fa-solid fa-vest"></i> <span class="lang-text" data-id="d3-t">Alat Pelindung Diri (APD)</span></h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;" class="lang-text" data-id="d3-d">
+            Wajib: Pelindung telinga, kacamata safety, dan sepatu safety. <strong>DILARANG menggunakan sarung tangan longgar atau pakaian longgar dekat roda pemutar.</strong>
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="translations.js"></script>
+
+  <script>
+    // Toggle expandable sub-menus in the sidebar
+    function toggleMachine(button) {
+      const group = button.parentElement;
+      group.classList.toggle('open');
+    }
+
+    // Switch active content section
+    function showSection(sectionId, event) {
+      if(event) event.preventDefault();
+
+      // Update sidebar active link UI
+      const subItems = document.querySelectorAll('.sub-item');
+      subItems.forEach(item => item.classList.remove('active'));
+
+      const clickedItem = document.querySelector(`.sub-item[data-section="${sectionId}"]`);
+      if(clickedItem) clickedItem.classList.add('active');
+
+      // Update Breadcrumb text
+      const textId = `nav-${sectionId}`;
+      const breadcrumbElem = document.getElementById('current-breadcrumb');
+      breadcrumbElem.setAttribute('data-id', textId);
+      breadcrumbElem.innerText = translations[currentLang][textId] || '';
+
+      // Hide all panes and show selected
+      const panes = document.querySelectorAll('.section-pane');
+      panes.forEach(pane => pane.classList.remove('active'));
+
+      const activePane = document.getElementById('pane-' + sectionId);
+      if (activePane) {
+        activePane.classList.add('active');
+      }
+
+      // Close mobile sidebar after selecting
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    // Toggle mobile sidebar
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+        // Open Image in Lightbox Modal
+    function openModal(imgSrc, altText) {
+      const modal = document.getElementById('image-modal');
+      const modalImg = document.getElementById('modal-img');
+      const captionText = document.getElementById('modal-caption');
+
+      modal.style.display = 'block';
+      modalImg.src = imgSrc;
+      captionText.innerText = altText || '';
+    }
+
+    // Close Lightbox Modal
+    function closeModal() {
+      document.getElementById('image-modal').style.display = 'none';
+    }
+
+    // Automatically make all image cards clickable once loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.img-container img').forEach(img => {
+        img.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openModal(img.src, img.alt);
+        });
+      });
+      
+      // Close modal when pressing ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+    });
+  </script>
+
+  <!-- IMAGE LIGHTBOX MODAL -->
+  <div id="image-modal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modal-img" alt="Enlarged view">
+    <div id="modal-caption"></div>
+  </div>
+</body>
+</html>
