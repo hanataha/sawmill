@@ -67,6 +67,22 @@
           <a href="#" class="sub-item"><i class="fa-solid fa-lock"></i> <span class="lang-text" data-id="nav-maint">Dalam Pemeliharaan</span></a>
         </div>
       </div>
+
+      <div class="machine-group">
+        <button class="machine-btn" onclick="toggleMachine(this)">
+          <span><i class="fa-solid fa-book-bookmark" style="margin-right: 8px; color: var(--accent-amber);"></i> <span class="lang-text" data-id="nav-notes">Catatan & Arsip</span></span>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </button>
+
+        <div class="sub-menu">
+          <a href="#" class="sub-item" data-section="notes-add" onclick="showSection('notes-add', event)">
+            <i class="fa-solid fa-pen-to-square"></i> <span class="lang-text" data-id="nav-notes-add">Buat Catatan</span>
+          </a>
+          <a href="#" class="sub-item" data-section="notes-archive" onclick="showSection('notes-archive', event)">
+            <i class="fa-solid fa-box-archive"></i> <span class="lang-text" data-id="nav-notes-archive">Arsip Catatan</span>
+          </a>
+        </div>
+      </div>
     </nav>
   </aside>
 
@@ -512,6 +528,70 @@
         </div>
       </section>
 
+      <section id="pane-notes-add" class="section-pane">
+      <div class="pane-header">
+        <h1><i class="fa-solid fa-pen-to-square" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="note-add-title">Buat Catatan Baru</span></h1>
+        <p class="lang-text" data-id="note-add-sub">Tambahkan catatan operasional atau instruksi untuk tim.</p>
+      </div>
+
+      <div class="card">
+        <form id="note-form" onsubmit="handleCreateNote(event)">
+          <div class="form-group">
+            <label class="lang-text" data-id="form-title">Judul Catatan</label>
+            <input type="text" id="note-title" class="form-input" placeholder="Contoh: Settingan Pisau kayu Mahoni" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="lang-text" data-id="form-author">Nama Pembuat</label>
+              <input type="text" id="note-author" class="form-input" placeholder="Nama Anda" required>
+            </div>
+            <div class="form-group">
+              <label class="lang-text" data-id="form-category">Kategori</label>
+              <select id="note-category" class="form-input">
+                <option value="Umum">Umum (General)</option>
+                <option value="Setting Mesin">Setting Mesin</option>
+                <option value="Maintenance">Maintenance / Perbaikan</option>
+                <option value="Safety">Keselamatan Kerja</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="lang-text" data-id="form-content">Isi Catatan</label>
+            <textarea id="note-content" class="form-input form-textarea" rows="4" placeholder="Tulis rincian catatan di sini..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="lang-text" data-id="form-image">Unggah Foto (Opsional)</label>
+            <input type="file" id="note-image" class="form-input" accept="image/*">
+          </div>
+
+          <button type="submit" id="btn-submit" class="btn-submit">
+            <i class="fa-solid fa-paper-plane"></i> <span class="lang-text" data-id="btn-save">Simpan Catatan</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section id="pane-notes-archive" class="section-pane">
+      <div class="pane-header">
+        <h1><i class="fa-solid fa-box-archive" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="note-arc-title">Arsip Catatan</span></h1>
+        <p class="lang-text" data-id="note-arc-sub">Daftar semua catatan operasional yang dapat diakses oleh tim.</p>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <div class="form-group" style="margin-bottom: 20px;">
+        <input type="text" id="search-notes" class="form-input" placeholder="Cari berdasarkan judul, pembuat, atau isi catatan..." oninput="filterNotes()">
+      </div>
+
+      <!-- Notes Grid Container -->
+      <div id="notes-grid" class="notes-grid">
+        <p style="color: var(--text-muted);">Memuat catatan...</p>
+      </div>
+
+    </section>
+
     </main>
   </div>
 
@@ -599,5 +679,9 @@
     <img class="modal-content" id="modal-img" alt="Enlarged view">
     <div id="modal-caption"></div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="notes.js"></script>
 </body>
 </html>
