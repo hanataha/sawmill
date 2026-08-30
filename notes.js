@@ -184,3 +184,28 @@ document.addEventListener('DOMContentLoaded', () => {
   testSupabaseConnection();
   loadNotes();
 });
+
+function showSection(sectionId, event) {
+  if (event) event.preventDefault();
+
+  // Hide all sections
+  document.querySelectorAll('.section-pane').forEach(pane => {
+    pane.classList.remove('active');
+  });
+
+  // Remove active state from all sidebar items
+  document.querySelectorAll('.sub-item').forEach(item => {
+    item.classList.remove('active');
+  });
+
+  // Show target section pane
+  const targetPane = document.getElementById(`pane-${sectionId}`);
+  if (targetPane) {
+    targetPane.classList.add('active');
+  }
+
+  // Reload notes if opening archive
+  if (sectionId === 'notes-archive' && typeof loadNotes === 'function') {
+    loadNotes();
+  }
+}
