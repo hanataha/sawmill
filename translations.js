@@ -109,7 +109,25 @@ const translations = {
     "d2-t": "Pisau Berputar & Titik Jepit",
     "d2-d": "Dilarang membuka penutup pelindung atau memasukkan tangan saat pisau masih berputar. Tunggu mesin benar-benar berhenti total sebelum membersihkan kayu yang tersangkut.",
     "d3-t": "Alat Pelindung Diri (APD)",
-    "d3-d": "Wajib: Pelindung telinga, kacamata safety, dan sepatu safety. DILARANG menggunakan sarung tangan longgar atau pakaian longgar dekat roda pemutar."
+    "d3-d": "Wajib: Pelindung telinga, kacamata safety, dan sepatu safety. DILARANG menggunakan sarung tangan longgar atau pakaian longgar dekat roda pemutar.",
+
+    "nav-notes": "Catatan & Arsip",
+    "nav-notes-add": "Buat Catatan Baru",
+    "nav-notes-archive": "Arsip Catatan",
+
+    "note-add-title": "Buat Catatan Baru",
+    "note-add-sub": "Tambahkan catatan operasional atau instruksi untuk tim.",
+    "form-title": "Judul Catatan",
+    "form-author": "Nama Pembuat",
+    "form-category": "Kategori",
+    "form-content": "Isi Catatan",
+    "btn-save": "Simpan Catatan",
+    "note-arc-title": "Arsip Catatan",
+    "note-arc-sub": "Daftar semua catatan operasional yang dapat diakses oleh tim.",
+
+    "form-image": "Unggah Foto (Opsional)",
+
+    "search-placeholder": "Cari berdasarkan judul, pembuat, atau isi catatan..."
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -221,7 +239,25 @@ const translations = {
     "d2-t": "回転刃および巻き込まれ危険",
     "d2-d": "軸が回転している間は絶対に安全カバーを開けたり手を入れたりしないでください。詰まりを解消する際は完全に停止するまで待ってください。",
     "d3-t": "保護具（PPE）の着用義務",
-    "d3-d": "必須：耳栓、保護メガネ、安全靴。※送りローラー付近では手袋やダボついた clothing の着用は厳禁です。"
+    "d3-d": "必須：耳栓、保護メガネ、安全靴。※送りローラー付近では手袋やダボついた clothing の着用は厳禁です。",
+
+    "nav-notes": "メモとアーカイブ",
+    "nav-notes-add": "新規メモ作成",
+    "nav-notes-archive": "メモアーカイブ",
+
+    "note-add-title": "新規メモ作成",
+    "note-add-sub": "作業メモやチームへの指示を追加します。",
+    "form-title": "メモのタイトル",
+    "form-author": "作成者名",
+    "form-category": "カテゴリー",
+    "form-content": "メモの内容",
+    "btn-save": "メモを保存",
+    "note-arc-title": "メモアーカイブ",
+    "note-arc-sub": "チーム全員がアクセス可能な作業メモの一覧です。",
+
+    "form-image": "写真をアップロード（任意）",
+
+    "search-placeholder": "タイトル、作成者、または本文で検索..."
   }
 };
 
@@ -239,4 +275,9 @@ function toggleLanguage() {
 
   document.getElementById('search-input').placeholder = translations[currentLang]['search-ph'];
   document.getElementById('lang-btn-label').innerText = translations[currentLang]['lang-btn'];
+}
+
+const searchInput = document.getElementById('search-notes');
+if (searchInput && translations[currentLang]["search-placeholder"]) {
+  searchInput.placeholder = translations[currentLang]["search-placeholder"];
 }
