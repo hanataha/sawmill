@@ -11,7 +11,7 @@
 
   <!-- LEFT NAVIGATION PANE -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
+    <div class="sidebar-header" onclick="window.location.reload()" style="cursor: pointer;">
       <i class="fa-solid fa-industry"></i>
       <h2>Sawmill</h2>
     </div>
@@ -21,15 +21,21 @@
     </div>
 
     <nav class="nav-menu">
+      <!-- HOME PAGE LINK -->
+      <a href="#" class="sub-item active" data-section="home" onclick="showSection('home', event)">
+        <i class="fa-solid fa-house" style="color: var(--accent-amber); margin-right: 8px;"></i>
+        <span class="lang-text" data-id="nav-home">Beranda</span>
+      </a>
+
       <!-- 4面プレ－ナ－ (Four-Side Planer) -->
-      <div class="machine-group open">
+      <div class="machine-group">
         <button class="machine-btn" onclick="toggleMachine(this)">
-          <span><i class="fa-solid fa-cubes-stacked" style="margin-right: 8px; color: var(--accent-amber);"></i> 4面プレ－ナ－</span>
+          <span><i class="fa-solid fa-cubes-stacked" style="margin-right: 8px; color: var(--text-muted);"></i> 4面プレ－ナ－</span>
           <i class="fa-solid fa-chevron-down chevron"></i>
         </button>
 
         <div class="sub-menu">
-          <a href="#" class="sub-item active" data-section="desc" onclick="showSection('desc', event)">
+          <a href="#" class="sub-item" data-section="desc" onclick="showSection('desc', event)">
             <i class="fa-solid fa-circle-info"></i> <span class="lang-text" data-id="nav-desc">Deskripsi</span>
           </a>
           <a href="#" class="sub-item" data-section="start" onclick="showSection('start', event)">
@@ -108,8 +114,34 @@
 
     <main class="content-area">
 
+      <!-- SECTION: HOME / SUB HOME PAGE -->
+      <section id="pane-home" class="section-pane active">
+        <div class="pane-header">
+          <h1><i class="fa-solid fa-industry" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="home-title">Sistem Dokumentasi Mesin Sawmill</span></h1>
+          <p class="lang-text" data-id="home-sub">Pilih mesin atau fitur dari menu di sebelah kiri untuk melihat petunjuk penggunaan dan catatan operasional.</p>
+        </div>
+
+        <div class="cards-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 20px;">
+          <!-- Quick Access Card 1 -->
+          <div class="card" onclick="showSection('desc', event)" style="cursor: pointer;">
+            <h3><i class="fa-solid fa-gears" style="color: var(--accent-amber);"></i> 4面プレ－ナ－</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 8px;" class="lang-text" data-id="home-c1-desc">
+              Panduan pengoperasian mesin 4-Side Planer, penyetelan pisau, dan keselamatan kerja.
+            </p>
+          </div>
+
+          <!-- Quick Access Card 2 -->
+          <div class="card" onclick="showSection('notes-archive', event)" style="cursor: pointer;">
+            <h3><i class="fa-solid fa-box-archive" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="nav-notes-archive">Arsip Catatan</span></h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 8px;" class="lang-text" data-id="home-c2-desc">
+              Lihat dan cari catatan operasional serta instruksi kerja yang telah dibagikan tim.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <!-- SECTION 1: DESCRIPTION -->
-      <section id="pane-desc" class="section-pane active">
+      <section id="pane-desc" class="section-pane">
         <div class="pane-header">
           <h1><i class="fa-solid fa-circle-info" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="desc-title">Gambaran Umum Mesin</span></h1>
           <p class="lang-text" data-id="desc-sub">Memahami fungsi dan alur kerja mesin 4-Side Planer (4面プレ－ナ－).</p>
