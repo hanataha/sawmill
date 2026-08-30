@@ -209,3 +209,29 @@ function showSection(sectionId, event) {
     loadNotes();
   }
 }
+
+function showSection(sectionId, event) {
+  if (event) event.preventDefault();
+
+  // Hide all sections and activate selected pane
+  document.querySelectorAll('.section-pane').forEach(pane => pane.classList.remove('active'));
+  const activePane = document.getElementById('pane-' + sectionId);
+  if (activePane) activePane.classList.add('active');
+
+  // Update active states on sidebar items
+  document.querySelectorAll('.sub-item').forEach(item => item.classList.remove('active'));
+  const clickedItem = document.querySelector(`.sub-item[data-section="${sectionId}"]`);
+  if (clickedItem) clickedItem.classList.add('active');
+
+  // Close sidebar on mobile after selecting an option
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) {
+    sidebar.classList.remove('open'); // Removes mobile active class
+    sidebar.classList.remove('active'); // Extra fallback if your CSS uses .active instead of .open
+  }
+
+  // Reload notes if opening archive pane
+  if (sectionId === 'notes-archive' && typeof loadNotes === 'function') {
+    loadNotes();
+  }
+}
