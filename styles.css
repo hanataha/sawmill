@@ -680,6 +680,31 @@ body {
   display: block;
 }
 
+/* Hide all section panes by default */
+.section-pane {
+  display: none;
+}
+
+/* Show only the active pane */
+.section-pane.active {
+  display: block;
+}
+
+/* CSS for overlay in style.css */
+@media (max-width: 768px) {
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+  
+  .sidebar.open + .sidebar-overlay {
+    display: block;
+  }
+}
+
 /* --- Mobile Responsive --- */
 @media (max-width: 768px) {
   .sidebar {
