@@ -127,7 +127,13 @@ const translations = {
 
     "form-image": "Unggah Foto (Opsional)",
 
-    "search-placeholder": "Cari berdasarkan judul, pembuat, atau isi catatan..."
+    "search-placeholder": "Cari berdasarkan judul, pembuat, atau isi catatan...",
+
+    "nav-home": "Beranda",
+    "home-title": "Sistem Dokumentasi Mesin Sawmill",
+    "home-sub": "Pilih mesin atau fitur dari menu di sebelah kiri untuk melihat petunjuk penggunaan dan catatan operasional.",
+    "home-c1-desc": "Panduan pengoperasian mesin 4-Side Planer, penyetelan pisau, dan keselamatan kerja.",
+    "home-c2-desc": "Lihat dan cari catatan operasional serta instruksi kerja yang telah dibagikan tim."
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -257,7 +263,13 @@ const translations = {
 
     "form-image": "写真をアップロード（任意）",
 
-    "search-placeholder": "タイトル、作成者、または本文で検索..."
+    "search-placeholder": "タイトル、作成者、または本文で検索...",
+
+    "nav-home": "ホーム",
+    "home-title": "製材機械ドキュメンテーションシステム",
+    "home-sub": "左側のメニューから機械または機能を選択して、取扱説明書や作業メモを確認してください。",
+    "home-c1-desc": "4面プレーナーの操作手順、刃物調整、安全上の注意ガイド。",
+    "home-c2-desc": "チームが共有した作業メモや作業指示の検索・閲覧。"
   }
 };
 
