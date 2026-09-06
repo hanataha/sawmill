@@ -140,6 +140,22 @@
             </p>
           </div>
         </div>
+
+        <div class="home-notes-section">
+          <div class="home-notes-header">
+            <h2>
+              <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-amber);"></i>
+              <span class="lang-text" data-id="home-notes-title">Arsip terbaru</span>
+            </h2>
+            <button type="button" class="home-notes-all" onclick="showSection('notes-archive', event)">
+              <span class="lang-text" data-id="home-notes-all">Lihat semua</span>
+              <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div id="home-notes-preview" class="home-notes-preview notes-grid" aria-live="polite">
+            <p class="notes-status lang-text" data-id="notes-loading">Memuat catatan...</p>
+          </div>
+        </div>
       </section>
 
       <!-- SECTION 1: DESCRIPTION -->
