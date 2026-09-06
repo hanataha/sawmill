@@ -142,6 +142,9 @@ const translations = {
     "notes-upload-fail": "Gagal mengunggah gambar",
     "notes-save-fail": "Gagal menyimpan catatan",
     "notes-save-ok": "Catatan berhasil disimpan!",
+    "home-notes-title": "Arsip terbaru",
+    "home-notes-all": "Lihat semua",
+    "home-notes-empty": "Belum ada catatan di arsip.",
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -286,6 +289,9 @@ const translations = {
     "notes-upload-fail": "画像のアップロードに失敗しました",
     "notes-save-fail": "メモの保存に失敗しました",
     "notes-save-ok": "メモを保存しました！",
+    "home-notes-title": "最新のメモ",
+    "home-notes-all": "すべて見る",
+    "home-notes-empty": "まだアーカイブにメモがありません。",
   }
 };
 

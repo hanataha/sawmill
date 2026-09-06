@@ -33,6 +33,67 @@ function setNotesStatus(message, isError) {
   container.innerHTML = `<p class="notes-status" style="color: ${color};">${escapeHtml(message)}</p>`;
 }
 
+const HOME_NOTES_LIMIT = 4;
+
+function truncateText(text, maxLen) {
+  const s = text ? String(text).trim() : '';
+  if (s.length <= maxLen) return s;
+  return s.slice(0, maxLen - 1).trimEnd() + '…';
+}
+
+function setHomeNotesStatus(message, isError) {
+  const container = document.getElementById('home-notes-preview');
+  if (!container) return;
+  const color = isError ? 'var(--accent-danger, #e74c3c)' : 'var(--text-muted)';
+  container.innerHTML = `<p class="notes-status" style="color: ${color};">${escapeHtml(message)}</p>`;
+}
+
+function noteCardHtml(note, options) {
+  const compact = options && options.compact;
+  const content = compact
+    ? truncateText(note.content, 140)
+    : (note.content || '');
+  const titleSize = compact ? '1rem' : '1.1rem';
+  const openAttr = compact
+    ? ` role="button" tabindex="0" onclick="showSection('notes-archive', event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showSection('notes-archive', event);}"`
+    : '';
+  return `
+    <div class="note-card${compact ? ' note-card--home' : ''}"${openAttr}>
+      <div>
+        ${
+          note.image_url
+            ? `<div class="note-img-container${compact ? ' note-img-container--home' : ''}">
+            <img src="${escapeHtml(note.image_url)}" alt="" loading="lazy">
+          </div>`
+            : ''
+        }
+        <div class="note-header">
+          <span class="note-badge">${escapeHtml(note.category || 'Umum')}</span>
+        </div>
+        <h3 style="font-size: ${titleSize}; margin-bottom: 8px;">${escapeHtml(note.title)}</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; white-space: pre-line;">${escapeHtml(content)}</p>
+      </div>
+      <div class="note-meta">
+        <span><i class="fa-solid fa-user"></i> ${escapeHtml(note.author)}</span>
+        <span>${note.created_at ? new Date(note.created_at).toLocaleDateString() : ''}</span>
+      </div>
+    </div>`;
+}
+
+function renderHomeNotesPreview(notesList) {
+  const container = document.getElementById('home-notes-preview');
+  if (!container) return;
+
+  const latest = (notesList || []).slice(0, HOME_NOTES_LIMIT);
+  if (latest.length === 0) {
+    setHomeNotesStatus(t('home-notes-empty', 'Belum ada catatan di arsip.'), false);
+    return;
+  }
+
+  container.innerHTML = latest.map((note) => noteCardHtml(note, { compact: true })).join('');
+}
+
+
 function initSupabase() {
   if (supabaseClient) return supabaseClient;
   if (typeof supabase === 'undefined' || typeof supabase.createClient !== 'function') {
@@ -62,6 +123,7 @@ async function loadNotes() {
   if (loadNotesInFlight) return loadNotesInFlight;
 
   setNotesStatus(t('notes-loading', 'Memuat catatan...'), false);
+  setHomeNotesStatus(t('notes-loading', 'Memuat catatan...'), false);
 
   loadNotesInFlight = (async () => {
     try {
@@ -74,10 +136,9 @@ async function loadNotes() {
       const { data: notes, error } = await withTimeout(query, 12000, 'Notes request timed out');
 
       if (error) {
-        setNotesStatus(
-          t('notes-error', 'Gagal memuat catatan') + ': ' + (error.message || 'unknown'),
-          true
-        );
+        const msg = t('notes-error', 'Gagal memuat catatan') + ': ' + (error.message || 'unknown');
+        setNotesStatus(msg, true);
+        setHomeNotesStatus(msg, true);
         return;
       }
 
@@ -85,11 +146,11 @@ async function loadNotes() {
       renderNotes(allNotes);
     } catch (err) {
       console.error('loadNotes failed:', err);
-      setNotesStatus(
+      const msg =
         t('notes-error', 'Gagal memuat catatan') +
-          (err && err.message ? ': ' + err.message : ''),
-        true
-      );
+        (err && err.message ? ': ' + err.message : '');
+      setNotesStatus(msg, true);
+      setHomeNotesStatus(msg, true);
     } finally {
       loadNotesInFlight = null;
     }
@@ -104,34 +165,12 @@ function renderNotes(notesToRender) {
 
   if (!notesToRender || notesToRender.length === 0) {
     setNotesStatus(t('notes-empty', 'Tidak ada catatan yang ditemukan.'), false);
-    return;
+  } else {
+    container.innerHTML = notesToRender.map((note) => noteCardHtml(note, { compact: false })).join('');
   }
 
-  container.innerHTML = notesToRender
-    .map(
-      (note) => `
-    <div class="note-card">
-      <div>
-        ${
-          note.image_url
-            ? `<div class="note-img-container">
-            <img src="${escapeHtml(note.image_url)}" alt="" loading="lazy">
-          </div>`
-            : ''
-        }
-        <div class="note-header">
-          <span class="note-badge">${escapeHtml(note.category || 'Umum')}</span>
-        </div>
-        <h3 style="font-size: 1.1rem; margin-bottom: 8px;">${escapeHtml(note.title)}</h3>
-        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; white-space: pre-line;">${escapeHtml(note.content)}</p>
-      </div>
-      <div class="note-meta">
-        <span><i class="fa-solid fa-user"></i> ${escapeHtml(note.author)}</span>
-        <span>${note.created_at ? new Date(note.created_at).toLocaleDateString() : ''}</span>
-      </div>
-    </div>`
-    )
-    .join('');
+  // Home always shows the newest from the full cache (not search filters)
+  renderHomeNotesPreview(allNotes);
 }
 
 function filterNotes() {

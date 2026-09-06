@@ -704,6 +704,72 @@ body {
   display: block;
 }
 
+
+
+/* Home — latest archive preview */
+.home-notes-section {
+  margin-top: 28px;
+}
+
+.home-notes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.home-notes-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-notes-all {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--accent-amber);
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.home-notes-all:hover,
+.home-notes-all:focus-visible {
+  background: rgba(243, 156, 18, 0.12);
+  border-color: var(--accent-amber);
+  outline: none;
+}
+
+.home-notes-preview {
+  margin-top: 4px;
+}
+
+.note-card--home {
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.note-card--home:hover,
+.note-card--home:focus-visible {
+  border-color: var(--accent-amber);
+  outline: none;
+}
+
+.note-img-container--home {
+  max-height: 120px;
+}
+
 /* --- Overlay + scroll lock --- */
 .sidebar-overlay {
   display: none;
@@ -829,6 +895,18 @@ img {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
+  }
+
+  .home-notes-header h2 {
+    font-size: 1.05rem;
+  }
+
+  .home-notes-all {
+    min-height: 44px;
+  }
+
+  .note-img-container--home {
+    max-height: 100px;
   }
 
   .pane-header h1 {
