@@ -92,12 +92,14 @@
     </nav>
   </aside>
 
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+
   <!-- MAIN CONTENT AREA -->
   <div class="main-wrapper">
     <header class="top-bar">
       <div class="top-left-controls">
-        <button class="menu-toggle" onclick="toggleSidebar()">
-          <i class="fa-solid fa-bars"></i>
+        <button type="button" class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu" aria-controls="sidebar" aria-expanded="false">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
         </button>
 
         <!-- TOP LEFT LANGUAGE SWITCHER -->
@@ -497,40 +499,6 @@
         </div>
       </section>
 
-      <!-- SECTION 4: HOW TO USE -->
-      <section id="pane-operation" class="section-pane">
-        <div class="pane-header">
-          <h1><i class="fa-solid fa-gears" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="op-title">Cara Menggunakan Mesin</span></h1>
-          <p class="lang-text" data-id="op-sub">Prosedur memasukkan kayu dan pengecekan kualitas.</p>
-        </div>
-
-        <div class="step-list">
-          <div class="step-card">
-            <div class="step-number">1</div>
-            <div>
-              <h4><span class="lang-text" data-id="op-s1-t">Pemeriksaan Kayu Mentah</span></h4>
-              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s1-d">Periksa kayu dari paku, batu, kelengkungan ekstrem, atau kelembaban berlebih sebelum dimasukkan.</p>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-number">2</div>
-            <div>
-              <h4><span class="lang-text" data-id="op-s2-t">Memasukkan Kayu (Infeed)</span></h4>
-              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s2-d">Rapatkan kayu pada pembatas samping (fence) lalu dorong hingga roda penarik menjepit kayu.</p>
-            </div>
-          </div>
-
-          <div class="step-card">
-            <div class="step-number">3</div>
-            <div>
-              <h4><span class="lang-text" data-id="op-s3-t">Cek Sampel Pertama</span></h4>
-              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;" class="lang-text" data-id="op-s3-d">Ukur hasil kayu pertama menggunakan jangka sorong (caliper) di ujung dan tengah untuk memastikan akurasi.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- SECTION 5: WATCH OUT & DANGERS -->
       <section id="pane-dangers" class="section-pane">
         <div class="pane-header">
@@ -618,8 +586,8 @@
       </div>
 
       <!-- Notes Grid Container -->
-      <div id="notes-grid" class="notes-grid">
-        <p style="color: var(--text-muted);">Memuat catatan...</p>
+      <div id="notes-grid" class="notes-grid" aria-live="polite">
+        <p class="notes-status lang-text" data-id="notes-loading">Memuat catatan...</p>
       </div>
 
     </section>
@@ -636,44 +604,69 @@
       group.classList.toggle('open');
     }
 
+    function setSidebarOpen(isOpen) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const toggle = document.getElementById('menu-toggle');
+      if (!sidebar) return;
+
+      sidebar.classList.toggle('open', isOpen);
+      document.body.classList.toggle('sidebar-open', isOpen);
+
+      if (overlay) {
+        overlay.classList.toggle('visible', isOpen);
+        overlay.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+      }
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+    }
+
+    function closeSidebar() {
+      setSidebarOpen(false);
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const willOpen = !(sidebar && sidebar.classList.contains('open'));
+      setSidebarOpen(willOpen);
+    }
+
     // Switch active content section
     function showSection(sectionId, event) {
-      if(event) event.preventDefault();
+      if (event) event.preventDefault();
 
-      // Update sidebar active link UI
       const subItems = document.querySelectorAll('.sub-item');
       subItems.forEach(item => item.classList.remove('active'));
 
       const clickedItem = document.querySelector(`.sub-item[data-section="${sectionId}"]`);
-      if(clickedItem) clickedItem.classList.add('active');
+      if (clickedItem) clickedItem.classList.add('active');
 
-      // Update Breadcrumb text
-      const textId = `nav-${sectionId}`;
+      // Update breadcrumb text when translation key exists
       const breadcrumbElem = document.getElementById('current-breadcrumb');
-      breadcrumbElem.setAttribute('data-id', textId);
-      breadcrumbElem.innerText = translations[currentLang][textId] || '';
+      if (breadcrumbElem) {
+        const textId = `nav-${sectionId}`;
+        breadcrumbElem.setAttribute('data-id', textId);
+        if (typeof translations !== 'undefined' && typeof currentLang !== 'undefined') {
+          breadcrumbElem.innerText = (translations[currentLang] && translations[currentLang][textId]) || breadcrumbElem.innerText;
+        }
+      }
 
-      // Hide all panes and show selected
-      const panes = document.querySelectorAll('.section-pane');
-      panes.forEach(pane => pane.classList.remove('active'));
-
+      document.querySelectorAll('.section-pane').forEach(pane => pane.classList.remove('active'));
       const activePane = document.getElementById('pane-' + sectionId);
-      if (activePane) {
-        activePane.classList.add('active');
-      }
+      if (activePane) activePane.classList.add('active');
 
-      // Close mobile sidebar after selecting
+      // Always close drawer after navigation on small screens
       if (window.innerWidth <= 768) {
-        document.getElementById('sidebar').classList.remove('open');
+        closeSidebar();
+      }
+
+      if (sectionId === 'notes-archive' && typeof loadNotes === 'function') {
+        loadNotes();
       }
     }
 
-    // Toggle mobile sidebar
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-    }
-
-        // Open Image in Lightbox Modal
+    // Open Image in Lightbox Modal
     function openModal(imgSrc, altText) {
       const modal = document.getElementById('image-modal');
       const modalImg = document.getElementById('modal-img');
@@ -682,14 +675,16 @@
       modal.style.display = 'block';
       modalImg.src = imgSrc;
       captionText.innerText = altText || '';
+      document.body.classList.add('modal-open');
     }
 
     // Close Lightbox Modal
     function closeModal() {
-      document.getElementById('image-modal').style.display = 'none';
+      const modal = document.getElementById('image-modal');
+      if (modal) modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
     }
 
-    // Automatically make all image cards clickable once loaded
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.img-container img').forEach(img => {
         img.addEventListener('click', (e) => {
@@ -697,10 +692,17 @@
           openModal(img.src, img.alt);
         });
       });
-      
-      // Close modal when pressing ESC key
+
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape') {
+          closeModal();
+          closeSidebar();
+        }
+      });
+
+      // Close drawer if resizing to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeSidebar();
       });
     });
   </script>
@@ -712,7 +714,6 @@
     <div id="modal-caption"></div>
   </div>
 
-  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 

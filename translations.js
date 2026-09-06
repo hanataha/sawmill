@@ -133,7 +133,15 @@ const translations = {
     "home-title": "Sistem Dokumentasi Mesin Sawmill",
     "home-sub": "Pilih mesin atau fitur dari menu di sebelah kiri untuk melihat petunjuk penggunaan dan catatan operasional.",
     "home-c1-desc": "Panduan pengoperasian mesin 4-Side Planer, penyetelan pisau, dan keselamatan kerja.",
-    "home-c2-desc": "Lihat dan cari catatan operasional serta instruksi kerja yang telah dibagikan tim."
+    "home-c2-desc": "Lihat dan cari catatan operasional serta instruksi kerja yang telah dibagikan tim.",
+
+    "notes-loading": "Memuat catatan...",
+    "notes-empty": "Tidak ada catatan yang ditemukan.",
+    "notes-error": "Gagal memuat catatan",
+    "notes-uploading": "Mengunggah...",
+    "notes-upload-fail": "Gagal mengunggah gambar",
+    "notes-save-fail": "Gagal menyimpan catatan",
+    "notes-save-ok": "Catatan berhasil disimpan!",
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -269,7 +277,15 @@ const translations = {
     "home-title": "製材機械ドキュメンテーションシステム",
     "home-sub": "左側のメニューから機械または機能を選択して、取扱説明書や作業メモを確認してください。",
     "home-c1-desc": "4面プレーナーの操作手順、刃物調整、安全上の注意ガイド。",
-    "home-c2-desc": "チームが共有した作業メモや作業指示の検索・閲覧。"
+    "home-c2-desc": "チームが共有した作業メモや作業指示の検索・閲覧。",
+
+    "notes-loading": "メモを読み込み中...",
+    "notes-empty": "メモが見つかりません。",
+    "notes-error": "メモの読み込みに失敗しました",
+    "notes-uploading": "アップロード中...",
+    "notes-upload-fail": "画像のアップロードに失敗しました",
+    "notes-save-fail": "メモの保存に失敗しました",
+    "notes-save-ok": "メモを保存しました！",
   }
 };
 
@@ -277,7 +293,7 @@ let currentLang = 'id';
 
 function toggleLanguage() {
   currentLang = currentLang === 'id' ? 'ja' : 'id';
-  
+
   document.querySelectorAll('.lang-text').forEach(elem => {
     const key = elem.getAttribute('data-id');
     if (translations[currentLang][key]) {
@@ -285,8 +301,18 @@ function toggleLanguage() {
     }
   });
 
-  document.getElementById('search-input').placeholder = translations[currentLang]['search-ph'];
-  document.getElementById('lang-btn-label').innerText = translations[currentLang]['lang-btn'];
+  const sideSearch = document.getElementById('search-input');
+  if (sideSearch) sideSearch.placeholder = translations[currentLang]['search-ph'];
+
+  const langLabel = document.getElementById('lang-btn-label');
+  if (langLabel) langLabel.innerText = translations[currentLang]['lang-btn'];
+
+  const notesSearch = document.getElementById('search-notes');
+  if (notesSearch && translations[currentLang]['search-placeholder']) {
+    notesSearch.placeholder = translations[currentLang]['search-placeholder'];
+  }
+
+  document.documentElement.lang = currentLang === 'ja' ? 'ja' : 'id';
 }
 
 const searchInput = document.getElementById('search-notes');
