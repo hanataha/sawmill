@@ -1,55 +1,124 @@
-// Initialize Supabase Client
+// Initialize Supabase Client (safe — never leave archive stuck on loading)
 const SUPABASE_URL = 'https://cpgluhmswxgxakjfigsw.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_9-mWecLyoWN-l9uXl85PzA__qDiyiY8';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Store loaded notes globally for instant client-side filtering
+let supabaseClient = null;
 let allNotes = [];
+let loadNotesInFlight = null;
 
-// Utility function to prevent XSS injection
 function escapeHtml(text) {
-  return text ? text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+  return text
+    ? String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+    : '';
 }
 
-// Fetch notes from Supabase
+function t(key, fallback) {
+  try {
+    if (typeof translations !== 'undefined' && typeof currentLang !== 'undefined') {
+      const val = translations[currentLang] && translations[currentLang][key];
+      if (val) return val;
+    }
+  } catch (_) { /* ignore */ }
+  return fallback;
+}
+
+function setNotesStatus(message, isError) {
+  const container = document.getElementById('notes-grid');
+  if (!container) return;
+  const color = isError ? 'var(--accent-danger, #e74c3c)' : 'var(--text-muted)';
+  container.innerHTML = `<p class="notes-status" style="color: ${color};">${escapeHtml(message)}</p>`;
+}
+
+function initSupabase() {
+  if (supabaseClient) return supabaseClient;
+  if (typeof supabase === 'undefined' || typeof supabase.createClient !== 'function') {
+    throw new Error('Supabase library failed to load');
+  }
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return supabaseClient;
+}
+
+async function withTimeout(promise, ms, label) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(label || 'Request timed out')), ms);
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function loadNotes() {
   const container = document.getElementById('notes-grid');
   if (!container) return;
 
-  container.innerHTML = '<p style="color: var(--text-muted);">Memuat catatan...</p>';
+  // Deduplicate concurrent loads
+  if (loadNotesInFlight) return loadNotesInFlight;
 
-  const { data: notes, error } = await supabaseClient
-    .from('notes')
-    .select('*')
-    .order('created_at', { ascending: false });
+  setNotesStatus(t('notes-loading', 'Memuat catatan...'), false);
 
-  if (error) {
-    container.innerHTML = `<p style="color: #e74c3c;">Gagal memuat catatan: ${escapeHtml(error.message)}</p>`;
-    return;
-  }
+  loadNotesInFlight = (async () => {
+    try {
+      const client = initSupabase();
+      const query = client
+        .from('notes')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-  allNotes = notes || [];
-  renderNotes(allNotes);
+      const { data: notes, error } = await withTimeout(query, 12000, 'Notes request timed out');
+
+      if (error) {
+        setNotesStatus(
+          t('notes-error', 'Gagal memuat catatan') + ': ' + (error.message || 'unknown'),
+          true
+        );
+        return;
+      }
+
+      allNotes = notes || [];
+      renderNotes(allNotes);
+    } catch (err) {
+      console.error('loadNotes failed:', err);
+      setNotesStatus(
+        t('notes-error', 'Gagal memuat catatan') +
+          (err && err.message ? ': ' + err.message : ''),
+        true
+      );
+    } finally {
+      loadNotesInFlight = null;
+    }
+  })();
+
+  return loadNotesInFlight;
 }
 
-// Render notes array into HTML
 function renderNotes(notesToRender) {
   const container = document.getElementById('notes-grid');
   if (!container) return;
 
   if (!notesToRender || notesToRender.length === 0) {
-    container.innerHTML = '<p style="color: var(--text-muted);">Tidak ada catatan yang ditemukan.</p>';
+    setNotesStatus(t('notes-empty', 'Tidak ada catatan yang ditemukan.'), false);
     return;
   }
 
-  container.innerHTML = notesToRender.map(note => `
+  container.innerHTML = notesToRender
+    .map(
+      (note) => `
     <div class="note-card">
       <div>
-        ${note.image_url ? `
-          <div class="note-img-container">
-            <img src="${escapeHtml(note.image_url)}" alt="Lampiran Catatan" loading="lazy">
-          </div>
-        ` : ''}
+        ${
+          note.image_url
+            ? `<div class="note-img-container">
+            <img src="${escapeHtml(note.image_url)}" alt="" loading="lazy">
+          </div>`
+            : ''
+        }
         <div class="note-header">
           <span class="note-badge">${escapeHtml(note.category || 'Umum')}</span>
         </div>
@@ -58,180 +127,108 @@ function renderNotes(notesToRender) {
       </div>
       <div class="note-meta">
         <span><i class="fa-solid fa-user"></i> ${escapeHtml(note.author)}</span>
-        <span>${new Date(note.created_at).toLocaleDateString()}</span>
+        <span>${note.created_at ? new Date(note.created_at).toLocaleDateString() : ''}</span>
       </div>
-    </div>
-  `).join('');
+    </div>`
+    )
+    .join('');
 }
 
-// Live filter function triggered on search input
 function filterNotes() {
   const searchInput = document.getElementById('search-notes');
   if (!searchInput) return;
 
   const query = searchInput.value.toLowerCase().trim();
-
   if (!query) {
     renderNotes(allNotes);
     return;
   }
 
-  const filtered = allNotes.filter(note => {
-    const titleMatch = note.title && note.title.toLowerCase().includes(query);
-    const authorMatch = note.author && note.author.toLowerCase().includes(query);
-    const categoryMatch = note.category && note.category.toLowerCase().includes(query);
-    const contentMatch = note.content && note.content.toLowerCase().includes(query);
-
-    return titleMatch || authorMatch || categoryMatch || contentMatch;
+  const filtered = allNotes.filter((note) => {
+    const fields = [note.title, note.author, note.category, note.content];
+    return fields.some((f) => f && String(f).toLowerCase().includes(query));
   });
 
   renderNotes(filtered);
 }
 
-// Handle form submission with Image Upload
 async function handleCreateNote(event) {
   event.preventDefault();
 
   const submitBtn = document.getElementById('btn-submit');
+  const saveLabel = t('btn-save', 'Simpan Catatan');
+
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.innerText = 'Mengunggah...';
+    submitBtn.innerText = t('notes-uploading', 'Mengunggah...');
   }
 
-  const title = document.getElementById('note-title').value.trim();
-  const author = document.getElementById('note-author').value.trim();
-  const category = document.getElementById('note-category').value;
-  const content = document.getElementById('note-content').value.trim();
-  const imageInput = document.getElementById('note-image');
-  const imageFile = imageInput ? imageInput.files[0] : null;
+  try {
+    const client = initSupabase();
+    const title = document.getElementById('note-title').value.trim();
+    const author = document.getElementById('note-author').value.trim();
+    const category = document.getElementById('note-category').value;
+    const content = document.getElementById('note-content').value.trim();
+    const imageInput = document.getElementById('note-image');
+    const imageFile = imageInput ? imageInput.files[0] : null;
 
-  let imageUrl = null;
+    let imageUrl = null;
 
-  // 1. Upload image to Supabase Storage if selected
-  if (imageFile) {
-    const fileExt = imageFile.name.split('.').pop();
-    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `uploads/${fileName}`;
+    if (imageFile) {
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `uploads/${fileName}`;
 
-    const { error: uploadError } = await supabaseClient.storage
-      .from('note-images')
-      .upload(filePath, imageFile);
+      const { error: uploadError } = await client.storage
+        .from('note-images')
+        .upload(filePath, imageFile);
 
-    if (uploadError) {
-      alert('Gagal mengunggah gambar: ' + uploadError.message);
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Simpan Catatan';
+      if (uploadError) {
+        alert(t('notes-upload-fail', 'Gagal mengunggah gambar') + ': ' + uploadError.message);
+        return;
       }
+
+      const { data: publicUrlData } = client.storage
+        .from('note-images')
+        .getPublicUrl(filePath);
+      imageUrl = publicUrlData.publicUrl;
+    }
+
+    const { error: insertError } = await client
+      .from('notes')
+      .insert([{ title, author, category, content, image_url: imageUrl }]);
+
+    if (insertError) {
+      alert(t('notes-save-fail', 'Gagal menyimpan catatan') + ': ' + insertError.message);
       return;
     }
 
-    // Get public URL of uploaded file
-    const { data: publicUrlData } = supabaseClient.storage
-      .from('note-images')
-      .getPublicUrl(filePath);
+    alert(t('notes-save-ok', 'Catatan berhasil disimpan!'));
+    const form = document.getElementById('note-form');
+    if (form) form.reset();
 
-    imageUrl = publicUrlData.publicUrl;
-  }
+    const searchInput = document.getElementById('search-notes');
+    if (searchInput) searchInput.value = '';
 
-  // 2. Insert note into Database
-  const { error: insertError } = await supabaseClient
-    .from('notes')
-    .insert([{ title, author, category, content, image_url: imageUrl }]);
-
-  if (submitBtn) {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Simpan Catatan';
-  }
-
-  if (insertError) {
-    alert('Gagal menyimpan catatan: ' + insertError.message);
-    return;
-  }
-
-  alert('Catatan berhasil disimpan!');
-  document.getElementById('note-form').reset();
-
-  // Reset search input if present
-  const searchInput = document.getElementById('search-notes');
-  if (searchInput) searchInput.value = '';
-
-  // Switch to archive pane if showSection exists
-  if (typeof showSection === 'function') {
-    showSection('notes-archive', new Event('click'));
-  }
-
-  loadNotes();
-}
-
-// Test Supabase Connection
-async function testSupabaseConnection() {
-  try {
-    const { data, error } = await supabaseClient.from('notes').select('count', { count: 'exact', head: true });
-
-    if (error) {
-      console.error('❌ Supabase Connection Failed:', error.message);
+    if (typeof showSection === 'function') {
+      showSection('notes-archive', new Event('click'));
     } else {
-      console.log('✅ Supabase Connected Successfully! Database is reachable.');
+      await loadNotes();
     }
   } catch (err) {
-    console.error('❌ Supabase Error:', err);
+    console.error('handleCreateNote failed:', err);
+    alert(t('notes-save-fail', 'Gagal menyimpan catatan') + (err && err.message ? ': ' + err.message : ''));
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${escapeHtml(saveLabel)}`;
+    }
   }
 }
 
-// Run test and load notes on initial page load
 document.addEventListener('DOMContentLoaded', () => {
-  testSupabaseConnection();
-  loadNotes();
+  // Delay slightly so CDN supabase script is available; still fail visibly if not
+  setTimeout(() => {
+    loadNotes();
+  }, 0);
 });
-
-function showSection(sectionId, event) {
-  if (event) event.preventDefault();
-
-  // Hide all sections
-  document.querySelectorAll('.section-pane').forEach(pane => {
-    pane.classList.remove('active');
-  });
-
-  // Remove active state from all sidebar items
-  document.querySelectorAll('.sub-item').forEach(item => {
-    item.classList.remove('active');
-  });
-
-  // Show target section pane
-  const targetPane = document.getElementById(`pane-${sectionId}`);
-  if (targetPane) {
-    targetPane.classList.add('active');
-  }
-
-  // Reload notes if opening archive
-  if (sectionId === 'notes-archive' && typeof loadNotes === 'function') {
-    loadNotes();
-  }
-}
-
-function showSection(sectionId, event) {
-  if (event) event.preventDefault();
-
-  // Hide all sections and activate selected pane
-  document.querySelectorAll('.section-pane').forEach(pane => pane.classList.remove('active'));
-  const activePane = document.getElementById('pane-' + sectionId);
-  if (activePane) activePane.classList.add('active');
-
-  // Update active states on sidebar items
-  document.querySelectorAll('.sub-item').forEach(item => item.classList.remove('active'));
-  const clickedItem = document.querySelector(`.sub-item[data-section="${sectionId}"]`);
-  if (clickedItem) clickedItem.classList.add('active');
-
-  // Close sidebar on mobile after selecting an option
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar) {
-    sidebar.classList.remove('open'); // Removes mobile active class
-    sidebar.classList.remove('active'); // Extra fallback if your CSS uses .active instead of .open
-  }
-
-  // Reload notes if opening archive pane
-  if (sectionId === 'notes-archive' && typeof loadNotes === 'function') {
-    loadNotes();
-  }
-}
