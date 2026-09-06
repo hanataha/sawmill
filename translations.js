@@ -145,6 +145,10 @@ const translations = {
     "home-notes-title": "Arsip terbaru",
     "home-notes-all": "Lihat semua",
     "home-notes-empty": "Belum ada catatan di arsip.",
+    "pwa-title": "Pasang aplikasi",
+    "pwa-sub": "Buka lebih cepat dari layar utama HP.",
+    "pwa-install": "Pasang",
+    "pwa-later": "Nanti",
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -292,6 +296,10 @@ const translations = {
     "home-notes-title": "最新のメモ",
     "home-notes-all": "すべて見る",
     "home-notes-empty": "まだアーカイブにメモがありません。",
+    "pwa-title": "アプリをインストール",
+    "pwa-sub": "ホーム画面からすぐ開けます。",
+    "pwa-install": "インストール",
+    "pwa-later": "後で",
   }
 };
 
