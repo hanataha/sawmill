@@ -106,6 +106,14 @@ const SAWMILL_AUTH = (() => {
     return data.user;
   }
 
+  function avatarInitials(user) {
+    const name = displayNameFromUser(user) || '?';
+    const parts = name.replace(/@.*/, '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
   function updateAuthUI() {
     const loggedIn = isLoggedIn();
     document.querySelectorAll('[data-auth-visible="in"]').forEach((el) => {
@@ -126,6 +134,30 @@ const SAWMILL_AUTH = (() => {
     const accountNameInput = document.getElementById('account-display-name');
     if (accountNameInput && user && document.activeElement !== accountNameInput) {
       accountNameInput.value = (user.user_metadata && user.user_metadata.display_name) || '';
+    }
+
+    const avatar = document.getElementById('auth-avatar');
+    const chipLabel = document.getElementById('auth-chip-label');
+    const chip = document.getElementById('auth-chip');
+    if (avatar) {
+      avatar.textContent = loggedIn ? avatarInitials(user) : '?';
+      avatar.classList.toggle('auth-avatar--in', loggedIn);
+    }
+    if (chipLabel) {
+      if (loggedIn) {
+        const short = label.length > 14 ? label.slice(0, 13) + '…' : label;
+        chipLabel.textContent = short || tAuth('nav-account', 'Akun');
+        chipLabel.classList.remove('lang-text');
+        chipLabel.removeAttribute('data-id');
+      } else {
+        chipLabel.textContent = tAuth('nav-login', 'Masuk');
+        chipLabel.classList.add('lang-text');
+        chipLabel.setAttribute('data-id', 'nav-login');
+      }
+    }
+    if (chip) {
+      chip.classList.toggle('auth-chip--in', loggedIn);
+      chip.setAttribute('aria-label', loggedIn ? tAuth('nav-account', 'Akun') : tAuth('nav-login', 'Masuk'));
     }
   }
 
