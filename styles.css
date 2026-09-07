@@ -1163,3 +1163,61 @@ img {
   border-color: var(--accent-amber);
   color: var(--accent-amber);
 }
+
+
+/* Top-bar account chip */
+.auth-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+  max-width: 46vw;
+}
+.auth-chip:hover,
+.auth-chip:focus-visible {
+  border-color: var(--accent-amber);
+  outline: none;
+}
+.auth-chip--in {
+  border-color: rgba(243, 156, 18, 0.45);
+}
+.auth-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #2c3a47;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.auth-avatar--in {
+  background: rgba(243, 156, 18, 0.2);
+  color: var(--accent-amber);
+}
+.auth-chip-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.auth-help {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0 0 14px;
+}
+@media (max-width: 768px) {
+  .auth-chip { min-height: 44px; }
+  .auth-chip-label { max-width: 28vw; }
+}

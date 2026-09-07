@@ -181,6 +181,7 @@ const translations = {
     "account-saved": "Nama disimpan.",
     "form-author-account": "Pembuat",
     "form-author-hint": "Diambil dari akun yang sedang masuk.",
+    "auth-how-create": "Belum punya akun? Ketuk Daftar, isi nama + email + kata sandi. Kami kirim email konfirmasi — buka linknya, lalu masuk.",
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -364,6 +365,7 @@ const translations = {
     "account-saved": "名前を保存しました。",
     "form-author-account": "作成者",
     "form-author-hint": "ログイン中のアカウントから自動入力されます。",
+    "auth-how-create": "アカウント未作成なら「新規登録」へ。名前・メール・パスワードを入力すると確認メールが届きます。リンクを開いてからログインしてください。",
   }
 };
 
