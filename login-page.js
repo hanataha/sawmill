@@ -3,7 +3,7 @@
     var params = new URLSearchParams(window.location.search);
     var safe = SAWMILL_AUTH.safeNextUrl(params.get("next"));
     if (safe && safe.indexOf("login.html") === -1) return safe;
-    return "account.html";
+    return "./";
   }
 
   async function handleSignIn(event) {
