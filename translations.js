@@ -21,9 +21,9 @@ const translations = {
     "desc-feat3-t": "Sistem Penyedot Serbuk",
     "desc-feat3-d": "Menghasilkan limbah kayu yang banyak; wajib menyalakan penyedot debu (集塵機).",
     
-    "img1-tag": "Mesin",
-    "img1-title": "4面プレ－ナ－",
-    "img1-desc": "Tampak depan 4面プレ－ナ－",
+    "desc-img-tag": "Mesin",
+    "desc-img-title": "4面プレ－ナ－",
+    "desc-img-desc": "Tampak depan 4面プレ－ナ－",
 
     "start-title": "Cara Menyalakan Mesin",
     "start-sub": "Pemeriksaan awal dan urutan menyalakan mesin.",
@@ -126,6 +126,15 @@ const translations = {
     "note-arc-sub": "Daftar semua catatan operasional yang dapat diakses oleh tim.",
 
     "form-image": "Unggah Foto (Opsional)",
+    "ph-note-title": "Contoh: Settingan Pisau kayu Mahoni",
+    "ph-note-author": "Nama Anda",
+    "ph-note-content": "Tulis rincian catatan di sini...",
+    "cat-umum": "Umum (General)",
+    "cat-setting": "Setting Mesin",
+    "cat-maint": "Maintenance / Perbaikan",
+    "cat-safety": "Keselamatan Kerja",
+    "file-choose": "Pilih file",
+    "file-none": "Belum ada file dipilih",
 
     "search-placeholder": "Cari berdasarkan judul, pembuat, atau isi catatan...",
 
@@ -172,9 +181,9 @@ const translations = {
     "desc-feat3-t": "集塵システム",
     "desc-feat3-d": "大量の切屑が発生するため、集塵機の起動が必須です。",
     
-    "img1-tag": "機械",
-    "img1-title": "4面プレーナー",
-    "img1-desc": "4面プレーナーの正面外観",
+    "desc-img-tag": "機械",
+    "desc-img-title": "4面プレーナー",
+    "desc-img-desc": "4面プレーナーの正面外観",
 
     "start-title": "機械の起動手順",
     "start-sub": "事前点検と起動シーケンス。",
@@ -277,6 +286,15 @@ const translations = {
     "note-arc-sub": "チーム全員がアクセス可能な作業メモの一覧です。",
 
     "form-image": "写真をアップロード（任意）",
+    "ph-note-title": "例: マホガニー用刃物セッティング",
+    "ph-note-author": "お名前",
+    "ph-note-content": "メモの詳細をここに書いてください...",
+    "cat-umum": "一般",
+    "cat-setting": "機械設定",
+    "cat-maint": "メンテナンス／修理",
+    "cat-safety": "安全作業",
+    "file-choose": "ファイルを選択",
+    "file-none": "ファイル未選択",
 
     "search-placeholder": "タイトル、作成者、または本文で検索...",
 
@@ -305,31 +323,86 @@ const translations = {
 
 let currentLang = 'id';
 
-function toggleLanguage() {
-  currentLang = currentLang === 'id' ? 'ja' : 'id';
+function tKey(key, fallback) {
+  const pack = translations[currentLang] || {};
+  return pack[key] || fallback || key;
+}
 
-  document.querySelectorAll('.lang-text').forEach(elem => {
+function applyLanguage() {
+  document.querySelectorAll('.lang-text').forEach((elem) => {
     const key = elem.getAttribute('data-id');
-    if (translations[currentLang][key]) {
-      elem.innerText = translations[currentLang][key];
+    if (key && translations[currentLang][key]) {
+      elem.textContent = translations[currentLang][key];
     }
   });
 
-  const sideSearch = document.getElementById('search-input');
-  if (sideSearch) sideSearch.placeholder = translations[currentLang]['search-ph'];
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((elem) => {
+    const key = elem.getAttribute('data-i18n-placeholder');
+    if (key && translations[currentLang][key]) {
+      elem.setAttribute('placeholder', translations[currentLang][key]);
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-option]').forEach((elem) => {
+    const key = elem.getAttribute('data-i18n-option');
+    if (key && translations[currentLang][key]) {
+      elem.textContent = translations[currentLang][key];
+    }
+  });
 
   const langLabel = document.getElementById('lang-btn-label');
-  if (langLabel) langLabel.innerText = translations[currentLang]['lang-btn'];
-
-  const notesSearch = document.getElementById('search-notes');
-  if (notesSearch && translations[currentLang]['search-placeholder']) {
-    notesSearch.placeholder = translations[currentLang]['search-placeholder'];
+  if (langLabel && translations[currentLang]['lang-btn']) {
+    langLabel.textContent = translations[currentLang]['lang-btn'];
   }
 
   document.documentElement.lang = currentLang === 'ja' ? 'ja' : 'id';
+
+  // Refresh notes cards so category badges follow language
+  if (typeof allNotes !== 'undefined' && Array.isArray(allNotes) && typeof renderNotes === 'function') {
+    const searchInput = document.getElementById('search-notes');
+    if (searchInput && searchInput.value.trim() && typeof filterNotes === 'function') {
+      filterNotes();
+    } else {
+      renderNotes(allNotes);
+    }
+  }
+
+  // Keep file name label in sync if no file selected
+  const fileInput = document.getElementById('note-image');
+  const fileName = document.getElementById('note-image-name');
+  if (fileInput && fileName && !fileInput.files.length) {
+    fileName.textContent = tKey('file-none', 'Belum ada file dipilih');
+    fileName.classList.add('lang-text');
+    fileName.setAttribute('data-id', 'file-none');
+  }
 }
 
-const searchInput = document.getElementById('search-notes');
-if (searchInput && translations[currentLang]["search-placeholder"]) {
-  searchInput.placeholder = translations[currentLang]["search-placeholder"];
+function toggleLanguage() {
+  currentLang = currentLang === 'id' ? 'ja' : 'id';
+  applyLanguage();
 }
+
+function setupFilePicker() {
+  const input = document.getElementById('note-image');
+  const btn = document.getElementById('note-image-btn');
+  const name = document.getElementById('note-image-name');
+  if (!input || !btn || !name) return;
+
+  btn.addEventListener('click', () => input.click());
+  input.addEventListener('change', () => {
+    if (input.files && input.files[0]) {
+      name.textContent = input.files[0].name;
+      name.classList.remove('lang-text');
+      name.removeAttribute('data-id');
+    } else {
+      name.textContent = tKey('file-none', 'Belum ada file dipilih');
+      name.classList.add('lang-text');
+      name.setAttribute('data-id', 'file-none');
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyLanguage();
+  setupFilePicker();
+});

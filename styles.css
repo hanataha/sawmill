@@ -1057,3 +1057,38 @@ img {
 @media (max-width: 768px) {
   .pwa-install-btn, .pwa-install-dismiss { min-height: 44px; }
 }
+
+
+.file-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.file-picker-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.file-picker-btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-weight: 600;
+  cursor: pointer;
+}
+.file-picker-btn:hover,
+.file-picker-btn:focus-visible {
+  border-color: var(--accent-amber);
+  outline: none;
+}
+.file-picker-name {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

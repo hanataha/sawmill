@@ -16,6 +16,18 @@ function escapeHtml(text) {
     : '';
 }
 
+function translateCategory(category) {
+  const map = {
+    Umum: 'cat-umum',
+    'Setting Mesin': 'cat-setting',
+    Maintenance: 'cat-maint',
+    Safety: 'cat-safety',
+  };
+  const key = map[category];
+  if (key) return t(key, category || 'Umum');
+  return category || t('cat-umum', 'Umum');
+}
+
 function t(key, fallback) {
   try {
     if (typeof translations !== 'undefined' && typeof currentLang !== 'undefined') {
@@ -68,7 +80,7 @@ function noteCardHtml(note, options) {
             : ''
         }
         <div class="note-header">
-          <span class="note-badge">${escapeHtml(note.category || 'Umum')}</span>
+          <span class="note-badge">${escapeHtml(translateCategory(note.category))}</span>
         </div>
         <h3 style="font-size: ${titleSize}; margin-bottom: 8px;">${escapeHtml(note.title)}</h3>
         <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; white-space: pre-line;">${escapeHtml(content)}</p>
