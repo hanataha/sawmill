@@ -25,7 +25,7 @@
     </div>
 
     <div class="nav-search">
-      <input type="text" class="search-box" id="search-input" placeholder="Cari mesin atau topik...">
+      <input type="text" class="search-box" id="search-input" data-i18n-placeholder="search-ph" placeholder="Cari mesin atau topik...">
     </div>
 
     <nav class="nav-menu">
@@ -185,11 +185,11 @@
               <div class="img-container">
                 <!-- Replace src with your local image file path e.g., src="images/step1.jpg" -->
                 <img src="visual.jpg" alt="visual 4面プレ－ナ－.jpg">
-                <span class="badge lang-text" data-id="img1-tag">Mesin</span>
+                <span class="badge lang-text" data-id="desc-img-tag">Mesin</span>
               </div>
               <div class="img-card-body">
-                <h4><span class="lang-text" data-id="img1-title">4面プレ－ナ－</span></h4>
-                <p><span class="lang-text" data-id="img1-desc">Tampak depan 4面プレ－ナ－</span></p>
+                <h4><span class="lang-text" data-id="desc-img-title">4面プレ－ナ－</span></h4>
+                <p><span class="lang-text" data-id="desc-img-desc">Tampak depan 4面プレ－ナ－</span></p>
               </div>
             </div>
           </div>
@@ -441,8 +441,8 @@
 
         <!-- VISUAL SETUP GUIDE (IMAGE GALLERY / TIMELINE) -->
         <div class="card visual-guide-card">
-          <h3 class="lang-text" data-id="gal-title">Urutan Penyetelan Analog</h3>
-          <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;" class="lang-text" data-id="gal-sub">
+          <h3 class="lang-text" data-id="gal2-title">Urutan Penyetelan Analog</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;" class="lang-text" data-id="gal2-sub">
             Setelah menyetel angka di monitor, pastikan juga menyetel skala mekanis pada mesin agar sesuai dengan pengaturan digital. Karena Pisau 1 dan Pisau 2 hanya bisa disetel secara manual.
           </p>
 
@@ -562,33 +562,37 @@
         <form id="note-form" onsubmit="handleCreateNote(event)">
           <div class="form-group">
             <label class="lang-text" data-id="form-title">Judul Catatan</label>
-            <input type="text" id="note-title" class="form-input" placeholder="Contoh: Settingan Pisau kayu Mahoni" required>
+            <input type="text" id="note-title" class="form-input" data-i18n-placeholder="ph-note-title" placeholder="Contoh: Settingan Pisau kayu Mahoni" required>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="lang-text" data-id="form-author">Nama Pembuat</label>
-              <input type="text" id="note-author" class="form-input" placeholder="Nama Anda" required>
+              <input type="text" id="note-author" class="form-input" data-i18n-placeholder="ph-note-author" placeholder="Nama Anda" required>
             </div>
             <div class="form-group">
               <label class="lang-text" data-id="form-category">Kategori</label>
               <select id="note-category" class="form-input">
-                <option value="Umum">Umum (General)</option>
-                <option value="Setting Mesin">Setting Mesin</option>
-                <option value="Maintenance">Maintenance / Perbaikan</option>
-                <option value="Safety">Keselamatan Kerja</option>
+                <option value="Umum" data-i18n-option="cat-umum">Umum (General)</option>
+                <option value="Setting Mesin" data-i18n-option="cat-setting">Setting Mesin</option>
+                <option value="Maintenance" data-i18n-option="cat-maint">Maintenance / Perbaikan</option>
+                <option value="Safety" data-i18n-option="cat-safety">Keselamatan Kerja</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
             <label class="lang-text" data-id="form-content">Isi Catatan</label>
-            <textarea id="note-content" class="form-input form-textarea" rows="4" placeholder="Tulis rincian catatan di sini..." required></textarea>
+            <textarea id="note-content" class="form-input form-textarea" rows="4" data-i18n-placeholder="ph-note-content" placeholder="Tulis rincian catatan di sini..." required></textarea>
           </div>
 
           <div class="form-group">
             <label class="lang-text" data-id="form-image">Unggah Foto (Opsional)</label>
-            <input type="file" id="note-image" class="form-input" accept="image/*">
+            <div class="file-picker">
+              <input type="file" id="note-image" class="file-picker-input" accept="image/*">
+              <button type="button" id="note-image-btn" class="file-picker-btn lang-text" data-id="file-choose">Pilih file</button>
+              <span id="note-image-name" class="file-picker-name lang-text" data-id="file-none">Belum ada file dipilih</span>
+            </div>
           </div>
 
           <button type="submit" id="btn-submit" class="btn-submit">
@@ -606,7 +610,7 @@
 
       <!-- SEARCH BAR -->
       <div class="form-group" style="margin-bottom: 20px;">
-        <input type="text" id="search-notes" class="form-input" placeholder="Cari berdasarkan judul, pembuat, atau isi catatan..." oninput="filterNotes()">
+        <input type="text" id="search-notes" class="form-input" data-i18n-placeholder="search-placeholder" placeholder="Cari berdasarkan judul, pembuat, atau isi catatan..." oninput="filterNotes()">
       </div>
 
       <!-- Notes Grid Container -->
