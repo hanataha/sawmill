@@ -161,7 +161,7 @@ const translations = {
     "nav-login": "Masuk",
     "nav-account": "Akun",
     "login-title": "Masuk",
-    "login-sub": "Masuk untuk membuat catatan. Arsip tetap bisa dibaca tanpa akun.",
+    "login-sub": "Masuk dengan akun admin. Arsip tetap bisa dibaca tanpa akun.",
     "auth-tab-signin": "Masuk",
     "auth-tab-signup": "Daftar",
     "auth-email": "Email",
@@ -181,7 +181,7 @@ const translations = {
     "account-saved": "Nama disimpan.",
     "form-author-account": "Pembuat",
     "form-author-hint": "Diambil dari akun yang sedang masuk.",
-    "auth-how-create": "Belum punya akun? Ketuk Daftar, isi nama + email + kata sandi. Kami kirim email konfirmasi — buka linknya, lalu masuk.",
+    "auth-how-create": "Akun dibuat oleh admin. Belum punya? Minta admin.",
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -345,7 +345,7 @@ const translations = {
     "nav-login": "ログイン",
     "nav-account": "アカウント",
     "login-title": "ログイン",
-    "login-sub": "メモ作成にはログインが必要です。アーカイブはアカウントなしで読めます。",
+    "login-sub": "管理者アカウントでログインしてください。アーカイブはアカウントなしで読めます。",
     "auth-tab-signin": "ログイン",
     "auth-tab-signup": "新規登録",
     "auth-email": "メール",
@@ -365,7 +365,7 @@ const translations = {
     "account-saved": "名前を保存しました。",
     "form-author-account": "作成者",
     "form-author-hint": "ログイン中のアカウントから自動入力されます。",
-    "auth-how-create": "アカウント未作成なら「新規登録」へ。名前・メール・パスワードを入力すると確認メールが届きます。リンクを開いてからログインしてください。",
+    "auth-how-create": "アカウントは管理者のみ作成できます。必要な場合は管理者に依頼してください。",
   }
 };
 
