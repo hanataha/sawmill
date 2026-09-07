@@ -186,6 +186,13 @@ body {
   gap: 15px;
 }
 
+.top-right-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
 .lang-btn {
   background: var(--bg-card);
   border: 1px solid var(--accent-amber);
@@ -870,6 +877,10 @@ img {
   .top-left-controls {
     gap: 8px;
     min-width: 0;
+  }
+
+  .top-right-controls {
+    margin-left: auto;
   }
 
   .lang-btn {
