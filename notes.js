@@ -107,6 +107,9 @@ function renderHomeNotesPreview(notesList) {
 
 
 function initSupabase() {
+  if (window.SAWMILL_AUTH && typeof SAWMILL_AUTH.getClient === 'function') {
+    return SAWMILL_AUTH.getClient();
+  }
   if (supabaseClient) return supabaseClient;
   if (typeof supabase === 'undefined' || typeof supabase.createClient !== 'function') {
     throw new Error('Supabase library failed to load');
@@ -215,9 +218,20 @@ async function handleCreateNote(event) {
   }
 
   try {
+    if (window.SAWMILL_AUTH && !SAWMILL_AUTH.isLoggedIn()) {
+      SAWMILL_AUTH.requireLogin('notes-add');
+      return;
+    }
+
     const client = initSupabase();
+    const user = window.SAWMILL_AUTH ? SAWMILL_AUTH.getUser() : null;
+    if (!user) {
+      alert(t('auth-need-login', 'Silakan masuk dulu untuk membuat catatan.'));
+      return;
+    }
+
     const title = document.getElementById('note-title').value.trim();
-    const author = document.getElementById('note-author').value.trim();
+    const author = window.SAWMILL_AUTH.displayNameFromUser(user);
     const category = document.getElementById('note-category').value;
     const content = document.getElementById('note-content').value.trim();
     const imageInput = document.getElementById('note-image');
@@ -247,7 +261,7 @@ async function handleCreateNote(event) {
 
     const { error: insertError } = await client
       .from('notes')
-      .insert([{ title, author, category, content, image_url: imageUrl }]);
+      .insert([{ title, author, category, content, image_url: imageUrl, user_id: user.id }]);
 
     if (insertError) {
       alert(t('notes-save-fail', 'Gagal menyimpan catatan') + ': ' + insertError.message);
