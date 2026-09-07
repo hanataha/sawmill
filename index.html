@@ -95,11 +95,14 @@
           <a href="#" class="sub-item" data-section="notes-archive" onclick="showSection('notes-archive', event)">
             <i class="fa-solid fa-box-archive"></i> <span class="lang-text" data-id="nav-notes-archive">Arsip Catatan</span>
           </a>
-          <a href="#" class="sub-item" data-section="login" data-auth-visible="out" onclick="showSection('login', event)">
+          <a href="#" class="sub-item" id="nav-account" data-section="account" data-auth-visible="in" hidden onclick="showSection('account', event)">
+            <i class="fa-solid fa-user"></i> <span class="lang-text" data-id="nav-account">Akun</span>
+          </a>
+          <a href="#" class="sub-item" id="nav-login" data-section="login" data-auth-visible="out" onclick="showSection('login', event)">
             <i class="fa-solid fa-right-to-bracket"></i> <span class="lang-text" data-id="nav-login">Masuk</span>
           </a>
-          <a href="#" class="sub-item" data-section="account" data-auth-visible="in" hidden onclick="showSection('account', event)">
-            <i class="fa-solid fa-user"></i> <span class="lang-text" data-id="nav-account">Akun</span>
+          <a href="#" class="sub-item" id="nav-logout" data-auth-visible="in" hidden onclick="event.preventDefault(); handleSignOut();">
+            <i class="fa-solid fa-right-from-bracket"></i> <span class="lang-text" data-id="nav-logout">Keluar</span>
           </a>
         </div>
       </div>
@@ -726,6 +729,7 @@
     // Switch active content section
     function showSection(sectionId, event) {
       if (sectionId === 'notes-add' && window.SAWMILL_AUTH && !SAWMILL_AUTH.requireLogin('notes-add')) return;
+      if (sectionId === 'login' && window.SAWMILL_AUTH && SAWMILL_AUTH.isLoggedIn()) { showSection('account', event); return; }
       if (sectionId === 'account' && window.SAWMILL_AUTH && !SAWMILL_AUTH.isLoggedIn()) { showSection('login', event); return; }
       if (event) event.preventDefault();
 
