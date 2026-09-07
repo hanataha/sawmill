@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#12181b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sawmill">
+  <title>Masuk — Sawmill</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-shell">
+  <header class="auth-shell-top">
+    <a href="./" class="auth-back-home">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+      <span class="lang-text" data-id="auth-back-home">← Beranda</span>
+    </a>
+    <button class="lang-btn" type="button" id="lang-toggle-btn">
+      <i class="fa-solid fa-globe"></i>
+      <span id="lang-btn-label">🇮🇩 ID / 日本語</span>
+    </button>
+  </header>
+  <main class="auth-shell-main">
+    <div class="pane-header">
+      <h1><i class="fa-solid fa-right-to-bracket" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="login-title">Masuk</span></h1>
+      <p class="lang-text" data-id="login-sub">Masuk dengan akun admin. Arsip tetap bisa dibaca tanpa akun.</p>
+    </div>
+    <div class="card auth-card">
+      <p class="auth-help lang-text" data-id="auth-how-create">Akun dibuat oleh admin. Belum punya? Minta admin.</p>
+      <form id="form-signin" class="auth-form">
+        <div class="form-group">
+          <label class="lang-text" data-id="auth-email">Email</label>
+          <input type="email" id="signin-email" class="form-input" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="lang-text" data-id="auth-password">Kata sandi</label>
+          <input type="password" id="signin-password" class="form-input" required minlength="6" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-submit"><i class="fa-solid fa-right-to-bracket"></i> <span class="lang-text" data-id="auth-signin-btn">Masuk</span></button>
+      </form>
+      <p id="login-status" class="auth-status" aria-live="polite"></p>
+    </div>
+  </main>
+  <script src="translations.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script src="login-page.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>

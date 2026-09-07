@@ -167,16 +167,38 @@ const SAWMILL_AUTH = (() => {
     }
   }
 
+  function safeNextUrl(raw) {
+    if (!raw) return '';
+    try {
+      const decoded = decodeURIComponent(String(raw));
+      // Only allow same-origin relative paths (no protocol / //)
+      if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(decoded) || decoded.startsWith('//')) return '';
+      if (decoded.startsWith('/') && !decoded.startsWith('//')) {
+        // absolute path on same host is ok
+        return decoded;
+      }
+      if (decoded.startsWith('./') || decoded.startsWith('../') || /^[A-Za-z0-9_./?#&=%-]+$/.test(decoded)) {
+        return decoded;
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  function loginPageUrl(next) {
+    let url = 'login.html';
+    if (next) url += '?next=' + encodeURIComponent(next);
+    return url;
+  }
+
+  function accountPageUrl() {
+    return 'account.html';
+  }
+
   function requireLogin(sectionId) {
     if (isLoggedIn()) return true;
-    if (typeof showSection === 'function') {
-      showSection('login', new Event('click'));
-    }
-    const status = document.getElementById('login-status');
-    if (status) {
-      status.textContent = tAuth('auth-need-login', 'Silakan masuk dulu untuk membuat catatan.');
-      status.style.color = 'var(--accent-amber)';
-    }
+    let next = './';
+    if (sectionId) next = './#' + encodeURIComponent(sectionId);
+    window.location.href = loginPageUrl(next);
     return false;
   }
 
@@ -195,6 +217,9 @@ const SAWMILL_AUTH = (() => {
     requireLogin,
     updateAuthUI,
     tAuth,
+    safeNextUrl,
+    loginPageUrl,
+    accountPageUrl,
   };
 })();
 

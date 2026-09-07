@@ -95,14 +95,11 @@
           <a href="#" class="sub-item" data-section="notes-archive" onclick="showSection('notes-archive', event)">
             <i class="fa-solid fa-box-archive"></i> <span class="lang-text" data-id="nav-notes-archive">Arsip Catatan</span>
           </a>
-          <a href="#" class="sub-item" id="nav-account" data-section="account" data-auth-visible="in" hidden onclick="showSection('account', event)">
+          <a href="account.html" class="sub-item" id="nav-account" data-auth-visible="in" hidden>
             <i class="fa-solid fa-user"></i> <span class="lang-text" data-id="nav-account">Akun</span>
           </a>
-          <a href="#" class="sub-item" id="nav-login" data-section="login" data-auth-visible="out" onclick="showSection('login', event)">
+          <a href="login.html" class="sub-item" id="nav-login" data-auth-visible="out">
             <i class="fa-solid fa-right-to-bracket"></i> <span class="lang-text" data-id="nav-login">Masuk</span>
-          </a>
-          <a href="#" class="sub-item" id="nav-logout" data-auth-visible="in" hidden onclick="event.preventDefault(); handleSignOut();">
-            <i class="fa-solid fa-right-from-bracket"></i> <span class="lang-text" data-id="nav-logout">Keluar</span>
           </a>
         </div>
       </div>
@@ -568,53 +565,6 @@
         </div>
       </section>
 
-
-      <section id="pane-login" class="section-pane">
-        <div class="pane-header">
-          <h1><i class="fa-solid fa-right-to-bracket" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="login-title">Masuk</span></h1>
-          <p class="lang-text" data-id="login-sub">Masuk dengan akun admin. Arsip tetap bisa dibaca tanpa akun.</p>
-        </div>
-        <div class="card auth-card">
-          <p class="auth-help lang-text" data-id="auth-how-create">Akun dibuat oleh admin. Kalau belum punya, minta admin dulu.</p>
-
-          <form id="form-signin" class="auth-form" onsubmit="handleSignIn(event)">
-            <div class="form-group">
-              <label class="lang-text" data-id="auth-email">Email</label>
-              <input type="email" id="signin-email" class="form-input" required autocomplete="email">
-            </div>
-            <div class="form-group">
-              <label class="lang-text" data-id="auth-password">Kata sandi</label>
-              <input type="password" id="signin-password" class="form-input" required minlength="6" autocomplete="current-password">
-            </div>
-            <button type="submit" class="btn-submit"><i class="fa-solid fa-right-to-bracket"></i> <span class="lang-text" data-id="auth-signin-btn">Masuk</span></button>
-          </form>
-
-          <p id="login-status" class="auth-status" aria-live="polite"></p>
-        </div>
-      </section>
-
-      <section id="pane-account" class="section-pane">
-        <div class="pane-header">
-          <h1><i class="fa-solid fa-user" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="account-title">Akun</span></h1>
-          <p class="lang-text" data-id="account-sub">Kelola nama tampilan dan sesi masuk Anda.</p>
-        </div>
-        <div class="card auth-card">
-          <div class="form-group">
-            <label class="lang-text" data-id="auth-email">Email</label>
-            <p class="auth-readonly" data-auth-email>—</p>
-          </div>
-          <form id="form-account" onsubmit="handleAccountSave(event)">
-            <div class="form-group">
-              <label class="lang-text" data-id="auth-display-name">Nama tampilan</label>
-              <input type="text" id="account-display-name" class="form-input" required>
-            </div>
-            <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> <span class="lang-text" data-id="account-save">Simpan</span></button>
-          </form>
-          <button type="button" class="btn-secondary" onclick="handleSignOut()"><i class="fa-solid fa-right-from-bracket"></i> <span class="lang-text" data-id="auth-signout">Keluar</span></button>
-          <p id="account-status" class="auth-status" aria-live="polite"></p>
-        </div>
-      </section>
-
       <section id="pane-notes-add" class="section-pane">
       <div class="pane-header">
         <h1><i class="fa-solid fa-pen-to-square" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="note-add-title">Buat Catatan Baru</span></h1>
@@ -729,8 +679,11 @@
     // Switch active content section
     function showSection(sectionId, event) {
       if (sectionId === 'notes-add' && window.SAWMILL_AUTH && !SAWMILL_AUTH.requireLogin('notes-add')) return;
-      if (sectionId === 'login' && window.SAWMILL_AUTH && SAWMILL_AUTH.isLoggedIn()) { showSection('account', event); return; }
-      if (sectionId === 'account' && window.SAWMILL_AUTH && !SAWMILL_AUTH.isLoggedIn()) { showSection('login', event); return; }
+      if (sectionId === 'login') { window.location.href = 'login.html'; return; }
+      if (sectionId === 'account') {
+        window.location.href = window.SAWMILL_AUTH && SAWMILL_AUTH.isLoggedIn() ? 'account.html' : 'login.html';
+        return;
+      }
       if (event) event.preventDefault();
 
       const subItems = document.querySelectorAll('.sub-item');
@@ -817,89 +770,7 @@
   <script src="notes.js"></script>
   <script src="auth.js"></script>
 
-  <script>
-    // Auth UI handlers (login-only; public signup removed)
-    function handleAuthChipClick() {
-      if (!window.SAWMILL_AUTH) {
-        if (typeof showSection === 'function') showSection('login', new Event('click'));
-        return;
-      }
-      if (SAWMILL_AUTH.isLoggedIn()) {
-        showSection('account', new Event('click'));
-      } else {
-        showSection('login', new Event('click'));
-      }
-    }
-    window.handleAuthChipClick = handleAuthChipClick;
-
-    async function handleSignIn(event) {
-      event.preventDefault();
-      const status = document.getElementById('login-status');
-      const email = (document.getElementById('signin-email') || {}).value || '';
-      const password = (document.getElementById('signin-password') || {}).value || '';
-      if (status) {
-        status.textContent = '';
-        status.style.color = 'var(--text-muted)';
-      }
-      try {
-        await SAWMILL_AUTH.signIn(email, password);
-        if (status) {
-          status.textContent = SAWMILL_AUTH.tAuth('auth-signin-ok', 'Berhasil masuk.');
-          status.style.color = 'var(--accent-success)';
-        }
-        showSection('account', new Event('click'));
-      } catch (err) {
-        if (status) {
-          status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth('auth-error', 'Terjadi kesalahan autentikasi.');
-          status.style.color = 'var(--accent-danger)';
-        }
-      }
-    }
-    window.handleSignIn = handleSignIn;
-
-    async function handleAccountSave(event) {
-      event.preventDefault();
-      const status = document.getElementById('account-status');
-      const name = (document.getElementById('account-display-name') || {}).value || '';
-      if (status) {
-        status.textContent = '';
-        status.style.color = 'var(--text-muted)';
-      }
-      try {
-        await SAWMILL_AUTH.updateProfile(name);
-        if (status) {
-          status.textContent = SAWMILL_AUTH.tAuth('account-saved', 'Nama disimpan.');
-          status.style.color = 'var(--accent-success)';
-        }
-      } catch (err) {
-        if (status) {
-          status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth('auth-error', 'Terjadi kesalahan autentikasi.');
-          status.style.color = 'var(--accent-danger)';
-        }
-      }
-    }
-    window.handleAccountSave = handleAccountSave;
-
-    async function handleSignOut() {
-      const status = document.getElementById('account-status');
-      try {
-        await SAWMILL_AUTH.signOut();
-        showSection('login', new Event('click'));
-      } catch (err) {
-        if (status) {
-          status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth('auth-error', 'Terjadi kesalahan autentikasi.');
-          status.style.color = 'var(--accent-danger)';
-        }
-      }
-    }
-    window.handleSignOut = handleSignOut;
-
-    document.addEventListener('DOMContentLoaded', function () {
-      if (window.SAWMILL_AUTH && typeof SAWMILL_AUTH.init === 'function') {
-        SAWMILL_AUTH.init().catch(function () {});
-      }
-    });
-  </script>
+  <script src="index-auth.js"></script>
 
   <script src="pwa.js"></script>
 </body>
