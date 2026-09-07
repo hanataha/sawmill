@@ -191,6 +191,8 @@ body {
   align-items: center;
   gap: 8px;
   margin-left: auto;
+  position: relative;
+  z-index: 5;
 }
 
 .lang-btn {
@@ -1176,24 +1178,44 @@ img {
 }
 
 
-/* Top-bar account chip */
+/* Top-bar account chip — hardened against iOS Safari UA button paint */
 .auth-chip {
+  -webkit-appearance: none;
+  appearance: none;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-height: 40px;
+  min-width: 44px;
   padding: 4px 10px 4px 4px;
   border-radius: 999px;
   border: 1px solid var(--border-color);
-  background: var(--bg-card);
+  background-color: #1e272e;
+  background-color: var(--bg-card);
   color: var(--text-main);
   cursor: pointer;
   max-width: 46vw;
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  font: inherit;
+  line-height: 1.2;
+  text-align: left;
+  box-shadow: none;
 }
 .auth-chip:hover,
 .auth-chip:focus-visible {
   border-color: var(--accent-amber);
   outline: none;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+.auth-chip:active {
+  background-color: var(--bg-card);
+  color: var(--text-main);
 }
 .auth-chip--in {
   border-color: rgba(243, 156, 18, 0.45);
@@ -1205,13 +1227,20 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background-color: #2c3a47;
   background: #2c3a47;
   color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 700;
   flex-shrink: 0;
+  pointer-events: none;
+}
+.auth-avatar i {
+  color: inherit;
+  font-size: 0.85rem;
 }
 .auth-avatar--in {
+  background-color: rgba(243, 156, 18, 0.2);
   background: rgba(243, 156, 18, 0.2);
   color: var(--accent-amber);
 }
@@ -1221,6 +1250,8 @@ img {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: inherit;
+  pointer-events: none;
 }
 .auth-help {
   font-size: 0.82rem;
@@ -1229,6 +1260,9 @@ img {
   margin: 0 0 14px;
 }
 @media (max-width: 768px) {
-  .auth-chip { min-height: 44px; }
+  .auth-chip {
+    min-height: 44px;
+    min-width: 44px;
+  }
   .auth-chip-label { max-width: 28vw; }
 }

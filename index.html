@@ -125,7 +125,7 @@
 
       <div class="top-right-controls">
         <button type="button" id="auth-chip" class="auth-chip" onclick="handleAuthChipClick()" aria-label="Account">
-          <span id="auth-avatar" class="auth-avatar" aria-hidden="true">?</span>
+          <span id="auth-avatar" class="auth-avatar" aria-hidden="true"><i class="fa-solid fa-user"></i></span>
           <span id="auth-chip-label" class="auth-chip-label lang-text" data-id="nav-login">Masuk</span>
         </button>
       </div>
@@ -569,14 +569,10 @@
       <section id="pane-login" class="section-pane">
         <div class="pane-header">
           <h1><i class="fa-solid fa-right-to-bracket" style="color: var(--accent-amber);"></i> <span class="lang-text" data-id="login-title">Masuk</span></h1>
-          <p class="lang-text" data-id="login-sub">Masuk untuk membuat catatan. Arsip tetap bisa dibaca tanpa akun.</p>
+          <p class="lang-text" data-id="login-sub">Masuk dengan akun admin. Arsip tetap bisa dibaca tanpa akun.</p>
         </div>
         <div class="card auth-card">
-          <div class="auth-tabs">
-            <button type="button" class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')"><span class="lang-text" data-id="auth-tab-signin">Masuk</span></button>
-            <button type="button" class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')"><span class="lang-text" data-id="auth-tab-signup">Daftar</span></button>
-          </div>
-          <p class="auth-help lang-text" data-id="auth-how-create">Belum punya akun? Ketuk Daftar, isi nama + email + kata sandi. Kami kirim email konfirmasi — buka linknya, lalu masuk.</p>
+          <p class="auth-help lang-text" data-id="auth-how-create">Akun dibuat oleh admin. Kalau belum punya, minta admin dulu.</p>
 
           <form id="form-signin" class="auth-form" onsubmit="handleSignIn(event)">
             <div class="form-group">
@@ -588,22 +584,6 @@
               <input type="password" id="signin-password" class="form-input" required minlength="6" autocomplete="current-password">
             </div>
             <button type="submit" class="btn-submit"><i class="fa-solid fa-right-to-bracket"></i> <span class="lang-text" data-id="auth-signin-btn">Masuk</span></button>
-          </form>
-
-          <form id="form-signup" class="auth-form" onsubmit="handleSignUp(event)" hidden>
-            <div class="form-group">
-              <label class="lang-text" data-id="auth-display-name">Nama tampilan</label>
-              <input type="text" id="signup-name" class="form-input" required autocomplete="nickname">
-            </div>
-            <div class="form-group">
-              <label class="lang-text" data-id="auth-email">Email</label>
-              <input type="email" id="signup-email" class="form-input" required autocomplete="email">
-            </div>
-            <div class="form-group">
-              <label class="lang-text" data-id="auth-password">Kata sandi</label>
-              <input type="password" id="signup-password" class="form-input" required minlength="6" autocomplete="new-password">
-            </div>
-            <button type="submit" class="btn-submit"><i class="fa-solid fa-user-plus"></i> <span class="lang-text" data-id="auth-signup-btn">Buat akun</span></button>
           </form>
 
           <p id="login-status" class="auth-status" aria-live="polite"></p>
@@ -832,6 +812,91 @@
 
   <script src="notes.js"></script>
   <script src="auth.js"></script>
+
+  <script>
+    // Auth UI handlers (login-only; public signup removed)
+    function handleAuthChipClick() {
+      if (!window.SAWMILL_AUTH) {
+        if (typeof showSection === 'function') showSection('login', new Event('click'));
+        return;
+      }
+      if (SAWMILL_AUTH.isLoggedIn()) {
+        showSection('account', new Event('click'));
+      } else {
+        showSection('login', new Event('click'));
+      }
+    }
+    window.handleAuthChipClick = handleAuthChipClick;
+
+    async function handleSignIn(event) {
+      event.preventDefault();
+      const status = document.getElementById('login-status');
+      const email = (document.getElementById('signin-email') || {}).value || '';
+      const password = (document.getElementById('signin-password') || {}).value || '';
+      if (status) {
+        status.textContent = '';
+        status.style.color = 'var(--text-muted)';
+      }
+      try {
+        await SAWMILL_AUTH.signIn(email, password);
+        if (status) {
+          status.textContent = SAWMILL_AUTH.tAuth('auth-signin-ok', 'Berhasil masuk.');
+          status.style.color = 'var(--accent-success)';
+        }
+        showSection('account', new Event('click'));
+      } catch (err) {
+        if (status) {
+          status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth('auth-error', 'Terjadi kesalahan autentikasi.');
+          status.style.color = 'var(--accent-danger)';
+        }
+      }
+    }
+    window.handleSignIn = handleSignIn;
+
+    async function handleAccountSave(event) {
+      event.preventDefault();
+      const status = document.getElementById('account-status');
+      const name = (document.getElementById('account-display-name') || {}).value || '';
+      if (status) {
+        status.textContent = '';
+        status.style.color = 'var(--text-muted)';
+      }
+      try {
+        await SAWMILL_AUTH.updateProfile(name);
+        if (status) {
+          status.textContent = SAWMILL_AUTH.tAuth('account-saved', 'Nama disimpan.');
+          status.style.color = 'var(--accent-success)';
+        }
+      } catch (err) {
+        if (status) {
+          status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth('auth-error', 'Terjadi kesalahan autentikasi.');
+          status.style.color = 'var(--accent-danger)';
+        }
+      }
+    }
+    window.handleAccountSave = handleAccountSave;
+
+    async function handleSignOut() {
+      const status = document.getElementById('account-status');
+      try {
+        await SAWMILL_AUTH.signOut();
+        showSection('login', new Event('click'));
+      } catch (err) {
+        if (status) {
+          status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth('auth-error', 'Terjadi kesalahan autentikasi.');
+          status.style.color = 'var(--accent-danger)';
+        }
+      }
+    }
+    window.handleSignOut = handleSignOut;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.SAWMILL_AUTH && typeof SAWMILL_AUTH.init === 'function') {
+        SAWMILL_AUTH.init().catch(function () {});
+      }
+    });
+  </script>
+
   <script src="pwa.js"></script>
 </body>
 </html>

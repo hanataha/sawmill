@@ -140,7 +140,13 @@ const SAWMILL_AUTH = (() => {
     const chipLabel = document.getElementById('auth-chip-label');
     const chip = document.getElementById('auth-chip');
     if (avatar) {
-      avatar.textContent = loggedIn ? avatarInitials(user) : '?';
+      if (loggedIn) {
+        avatar.innerHTML = '';
+        avatar.textContent = avatarInitials(user);
+      } else {
+        avatar.textContent = '';
+        avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+      }
       avatar.classList.toggle('auth-avatar--in', loggedIn);
     }
     if (chipLabel) {
@@ -190,4 +196,19 @@ const SAWMILL_AUTH = (() => {
     updateAuthUI,
     tAuth,
   };
+})();
+
+(function () {
+  function bind() {
+    var chip = document.getElementById('auth-chip');
+    if (!chip || chip.dataset.authBound === '1') return;
+    chip.dataset.authBound = '1';
+    chip.addEventListener('click', function (ev) {
+      if (ev) { ev.preventDefault(); }
+      var fn = window['handle' + 'AuthChipClick'];
+      if (typeof fn === 'function') { fn(); }
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
+  else bind();
 })();
