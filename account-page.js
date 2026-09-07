@@ -13,6 +13,7 @@
         status.textContent = SAWMILL_AUTH.tAuth("account-saved", "Nama disimpan.");
         status.style.color = "var(--accent-success)";
       }
+      window.location.href = "./";
     } catch (err) {
       if (status) {
         status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth("auth-error", "Terjadi kesalahan autentikasi.");
@@ -25,7 +26,7 @@
     var status = document.getElementById("account-status");
     try {
       await SAWMILL_AUTH.signOut();
-      window.location.href = "login.html";
+      window.location.href = "./";
     } catch (err) {
       if (status) {
         status.textContent = (err && err.message) || SAWMILL_AUTH.tAuth("auth-error", "Terjadi kesalahan autentikasi.");
