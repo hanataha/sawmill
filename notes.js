@@ -226,7 +226,11 @@ async function handleCreateNote(event) {
     const client = initSupabase();
     const user = window.SAWMILL_AUTH ? SAWMILL_AUTH.getUser() : null;
     if (!user) {
-      alert(t('auth-need-login', 'Silakan masuk dulu untuk membuat catatan.'));
+      if (window.SAWMILL_AUTH && typeof SAWMILL_AUTH.requireLogin === 'function') {
+        SAWMILL_AUTH.requireLogin('notes-add');
+      } else {
+        window.location.href = 'login.html?next=' + encodeURIComponent('./#notes-add');
+      }
       return;
     }
 

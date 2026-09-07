@@ -183,6 +183,7 @@ const translations = {
     "form-author-account": "Pembuat",
     "form-author-hint": "Diambil dari akun yang sedang masuk.",
     "auth-how-create": "Akun dibuat oleh admin. Belum punya? Minta admin.",
+    "auth-back-home": "← Beranda",
   },
   ja: {
     "search-ph": "機械またはトピックを検索...",
@@ -368,6 +369,7 @@ const translations = {
     "form-author-account": "作成者",
     "form-author-hint": "ログイン中のアカウントから自動入力されます。",
     "auth-how-create": "アカウントは管理者のみ作成できます。必要な場合は管理者に依頼してください。",
+    "auth-back-home": "← ホーム",
   }
 };
 

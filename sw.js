@@ -1,8 +1,13 @@
 /* Sawmill PWA service worker — cache shell for offline reading */
-const CACHE = 'sawmill-shell-v5';
+const CACHE = 'sawmill-shell-v6';
 const PRECACHE = [
   './',
   './index.html',
+  './login.html',
+  './account.html',
+  './login-page.js',
+  './account-page.js',
+  './index-auth.js',
   './styles.css',
   './notes.js',
   './auth.js',
