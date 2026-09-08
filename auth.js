@@ -1,4 +1,5 @@
-// Sawmill auth helpers (Supabase Auth) — uses public anon key only
+// Sawmill auth helpers (Supabase Auth) — public anon key only.
+// Solid session: single ready Promise, one onAuthStateChange listener, JS-only chip.
 const SAWMILL_AUTH = (() => {
   const url = typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : 'https://cpgluhmswxgxakjfigsw.supabase.co';
   const anon = typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : 'sb_publishable_9-mWecLyoWN-l9uXl85PzA__qDiyiY8';
@@ -6,6 +7,9 @@ const SAWMILL_AUTH = (() => {
   let client = null;
   let session = null;
   let listeners = [];
+  let readyPromise = null;
+  let authListenerBound = false;
+  let chipBound = false;
 
   function getClient() {
     if (client) return client;
@@ -47,38 +51,42 @@ const SAWMILL_AUTH = (() => {
   function getUser() { return session && session.user ? session.user : null; }
   function isLoggedIn() { return !!(session && session.user); }
 
-  async function init() {
-    const c = getClient();
-    const { data } = await c.auth.getSession();
-    session = data.session || null;
-    c.auth.onAuthStateChange((_event, next) => {
-      session = next || null;
+  /**
+   * Idempotent init. Returns the same ready Promise every time.
+   * Wires onAuthStateChange exactly once.
+   */
+  function init() {
+    if (readyPromise) return readyPromise;
+
+    readyPromise = (async () => {
+      const c = getClient();
+      const { data } = await c.auth.getSession();
+      session = data.session || null;
+
+      if (!authListenerBound) {
+        authListenerBound = true;
+        c.auth.onAuthStateChange((_event, next) => {
+          session = next || null;
+          notify();
+        });
+      }
+
       notify();
-    });
-    notify();
-    return session;
+      return session;
+    })();
+
+    return readyPromise;
   }
 
-  async function signUp(email, password, displayName) {
-    const c = getClient();
-    const { data, error } = await c.auth.signUp({
-      email: email.trim(),
-      password,
-      options: {
-        data: { display_name: (displayName || '').trim() },
-        emailRedirectTo: window.location.origin + window.location.pathname,
-      },
-    });
-    if (error) throw error;
-    session = data.session || session;
-    notify();
-    return data;
+  function whenReady() {
+    return init();
   }
 
   async function signIn(email, password) {
+    await init();
     const c = getClient();
     const { data, error } = await c.auth.signInWithPassword({
-      email: email.trim(),
+      email: String(email || '').trim(),
       password,
     });
     if (error) throw error;
@@ -88,6 +96,7 @@ const SAWMILL_AUTH = (() => {
   }
 
   async function signOut() {
+    await init();
     const c = getClient();
     const { error } = await c.auth.signOut();
     if (error) throw error;
@@ -96,6 +105,7 @@ const SAWMILL_AUTH = (() => {
   }
 
   async function updateProfile(displayName) {
+    await init();
     const c = getClient();
     const { data, error } = await c.auth.updateUser({
       data: { display_name: (displayName || '').trim() },
@@ -163,7 +173,10 @@ const SAWMILL_AUTH = (() => {
     }
     if (chip) {
       chip.classList.toggle('auth-chip--in', loggedIn);
-      chip.setAttribute('aria-label', loggedIn ? tAuth('nav-account', 'Akun') : tAuth('nav-login', 'Masuk'));
+      chip.setAttribute(
+        'aria-label',
+        loggedIn ? tAuth('nav-account', 'Akun') : tAuth('nav-login', 'Masuk')
+      );
     }
   }
 
@@ -171,12 +184,8 @@ const SAWMILL_AUTH = (() => {
     if (!raw) return '';
     try {
       const decoded = decodeURIComponent(String(raw));
-      // Only allow same-origin relative paths (no protocol / //)
       if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(decoded) || decoded.startsWith('//')) return '';
-      if (decoded.startsWith('/') && !decoded.startsWith('//')) {
-        // absolute path on same host is ok
-        return decoded;
-      }
+      if (decoded.startsWith('/') && !decoded.startsWith('//')) return decoded;
       if (decoded.startsWith('./') || decoded.startsWith('../') || /^[A-Za-z0-9_./?#&=%-]+$/.test(decoded)) {
         return decoded;
       }
@@ -185,27 +194,61 @@ const SAWMILL_AUTH = (() => {
   }
 
   function loginPageUrl(next) {
-    let url = 'login.html';
-    if (next) url += '?next=' + encodeURIComponent(next);
-    return url;
+    let href = 'login.html';
+    if (next) href += '?next=' + encodeURIComponent(next);
+    return href;
   }
 
   function accountPageUrl() {
     return 'account.html';
   }
 
+  function goHome() {
+    window.location.href = './';
+  }
+
+  function goLogin(next) {
+    window.location.href = loginPageUrl(next || undefined);
+  }
+
+  function goAccount() {
+    window.location.href = accountPageUrl();
+  }
+
   function requireLogin(sectionId) {
     if (isLoggedIn()) return true;
     let next = './';
     if (sectionId) next = './#' + encodeURIComponent(sectionId);
-    window.location.href = loginPageUrl(next);
+    goLogin(next);
     return false;
   }
 
+  async function handleChipClick(ev) {
+    if (ev) ev.preventDefault();
+    try {
+      await init();
+    } catch (_) {
+      goLogin();
+      return;
+    }
+    if (isLoggedIn()) goAccount();
+    else goLogin();
+  }
+
+  function bindAuthChip() {
+    const chip = document.getElementById('auth-chip');
+    if (!chip || chipBound) return;
+    chipBound = true;
+    chip.addEventListener('click', handleChipClick);
+  }
+
+
+  // Public API — admin-provisioned accounts only (no public signup)
   return {
     getClient,
     init,
-    signUp,
+    whenReady,
+    get ready() { return readyPromise || init(); },
     signIn,
     signOut,
     updateProfile,
@@ -220,20 +263,31 @@ const SAWMILL_AUTH = (() => {
     safeNextUrl,
     loginPageUrl,
     accountPageUrl,
+    goHome,
+    goLogin,
+    goAccount,
+    handleChipClick,
+    bindAuthChip,
   };
 })();
 
-(function () {
-  function bind() {
-    var chip = document.getElementById('auth-chip');
-    if (!chip || chip.dataset.authBound === '1') return;
-    chip.dataset.authBound = '1';
-    chip.addEventListener('click', function (ev) {
-      if (ev) { ev.preventDefault(); }
-      var fn = window['handle' + 'AuthChipClick'];
-      if (typeof fn === 'function') { fn(); }
-    });
+(function bootstrapAuth() {
+  function run() {
+    if (typeof SAWMILL_AUTH.bindAuthChip === 'function') SAWMILL_AUTH.bindAuthChip();
+    if (document.getElementById('auth-chip')) {
+      SAWMILL_AUTH.init()
+        .then(function () {
+          var hash = (window.location.hash || '').replace(/^#/, '');
+          if (hash && typeof showSection === 'function') {
+            showSection(hash, null);
+          }
+        })
+        .catch(function () {});
+    }
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);
-  else bind();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
 })();
