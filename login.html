@@ -33,13 +33,13 @@
     </div>
     <div class="card auth-card">
       <p class="auth-help lang-text" data-id="auth-how-create">Akun dibuat oleh admin. Belum punya? Minta admin.</p>
-      <form id="form-signin" class="auth-form">
+      <form id="form-signin" class="auth-form" novalidate>
         <div class="form-group">
-          <label class="lang-text" data-id="auth-email">Email</label>
-          <input type="email" id="signin-email" class="form-input" required autocomplete="email">
+          <label class="lang-text" for="signin-email" data-id="auth-email">Email</label>
+          <input type="text" id="signin-email" class="form-input" required inputmode="email" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="nama@contoh.com">
         </div>
         <div class="form-group">
-          <label class="lang-text" data-id="auth-password">Kata sandi</label>
+          <label class="lang-text" for="signin-password" data-id="auth-password">Kata sandi</label>
           <input type="password" id="signin-password" class="form-input" required minlength="6" autocomplete="current-password">
         </div>
         <button type="submit" class="btn-submit"><i class="fa-solid fa-right-to-bracket"></i> <span class="lang-text" data-id="auth-signin-btn">Masuk</span></button>

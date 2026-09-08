@@ -1,5 +1,5 @@
 /* Sawmill PWA service worker — cache shell for offline reading */
-const CACHE = 'sawmill-shell-v7';
+const CACHE = 'sawmill-shell-v8';
 const PRECACHE = [
   './',
   './index.html',
@@ -7,11 +7,11 @@ const PRECACHE = [
   './account.html',
   './login-page.js',
   './account-page.js',
-  './index-auth.js',
   './styles.css',
   './notes.js',
   './auth.js',
   './translations.js',
+  './pwa.js',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',

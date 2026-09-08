@@ -218,6 +218,9 @@ async function handleCreateNote(event) {
   }
 
   try {
+    if (window.SAWMILL_AUTH && typeof SAWMILL_AUTH.whenReady === 'function') {
+      await SAWMILL_AUTH.whenReady();
+    }
     if (window.SAWMILL_AUTH && !SAWMILL_AUTH.isLoggedIn()) {
       SAWMILL_AUTH.requireLogin('notes-add');
       return;
